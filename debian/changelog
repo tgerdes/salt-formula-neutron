@@ -1,5 +1,5 @@
-salt-formula-neutron (2016.4.1-1) UNRELEASED; urgency=medium
+salt-formula-neutron (2016.4.1-1) unstable; urgency=medium
 
   * Initial release (Closes: #821920)
 
- -- Filip Pytloun <filip@pytloun.cz>  Mon, 18 Apr 2016 16:03:21 +0200
+ -- Filip Pytloun <filip@pytloun.cz>  Wed, 20 Apr 2016 16:04:34 +0200
