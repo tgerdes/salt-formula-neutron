@@ -2,10 +2,14 @@ parameters:
   neutron:
     _support:
       collectd:
-        enabled: false
+        enabled: true
       heka:
-        enabled: false
+        enabled: true
       sensu:
         enabled: true
       sphinx:
+        enabled: true
+      config:
+        enabled: true
+      grafana:
         enabled: true

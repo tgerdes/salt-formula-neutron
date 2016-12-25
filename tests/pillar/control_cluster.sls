@@ -1,11 +1,17 @@
 neutron:
   server:
     enabled: true
-    plugin: opencontrail
     fwaas: false
     dns_domain: novalocal
     tunnel_type: vxlan
     version: liberty
+    backend:
+      engine: contrail
+      host: 127.0.0.1
+      user: admin
+      password: password
+      token: token
+      tenant: admin
     bind:
       address: 127.0.0.1
       port: 9696
@@ -33,10 +39,13 @@ neutron:
       user: openstack
       password: password
       virtual_host: '/openstack'
-      ha_queues: true
     compute:
       host: 127.0.0.1
       region: RegionOne
       user: nova
       password: password
       tenant: service
+    audit:
+      filter_factory: 'keystonemiddleware.audit:filter_factory'
+      map_file: '/etc/pycadf/neutron_api_audit_map.conf'
+

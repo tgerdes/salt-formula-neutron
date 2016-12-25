@@ -1,4 +1,8 @@
-{%- from "neutron/map.jinja" import server with context %}
+{%- if pillar.neutron.gateway is defined %}
+{%- from "neutron/map.jinja" import gateway as neutron with context %}
+{%- else %}
+{%- from "neutron/map.jinja" import compute as neutron with context %}
+{%- endif %}
 [DEFAULT]
 
 #
@@ -10,35 +14,27 @@
 #state_path = /var/lib/neutron
 state_path = /var/lib/neutron
 
-# The host IP to bind to (string value)
-#bind_host = 0.0.0.0
-bind_host = {{ server.bind.address }}
 
-# The port to bind to (port value)
-# Minimum value: 0
-# Maximum value: 65535
-#bind_port = 9696
-bind_port = {{ server.bind.port }}
 
 # The path for API extensions. Note that this can be a colon-separated list of
 # paths. For example: api_extensions_path =
 # extensions:/path/to/more/exts:/even/more/exts. The __path__ of
 # neutron.extensions is appended to this, so if your extensions are in there
 # you don't need to specify them here. (string value)
-#api_extensions_path =
-api_extensions_path = extensions:/usr/lib/python2.7/dist-packages/neutron_plugin_contrail/extensions
+
+{% if neutron.backend.engine == "ml2" %}
+
+core_plugin = neutron.plugins.ml2.plugin.Ml2Plugin
+
+service_plugins =neutron.services.l3_router.l3_router_plugin.L3RouterPlugin,neutron.services.metering.metering_plugin.MeteringPlugin
+
+{% endif %}
 
 # The type of authentication to use (string value)
 #auth_strategy = keystone
 auth_strategy = keystone
 
-# The core plugin Neutron will use (string value)
-core_plugin = neutron_plugin_contrail.plugins.opencontrail.contrail_plugin.NeutronPluginContrailCoreV2
-
-
 # The service plugins Neutron will use (list value)
-#service_plugins =
-
 # The base MAC address Neutron will use for VIFs. The first 3 octets will
 # remain unchanged. If the 4th octet is not 00, it will also be used. The
 # others will be randomly generated. (string value)
@@ -46,6 +42,7 @@ core_plugin = neutron_plugin_contrail.plugins.opencontrail.contrail_plugin.Neutr
 
 # How many times Neutron will retry MAC generation (integer value)
 #mac_generation_retries = 16
+mac_generation_retries = 32
 
 # Allow the usage of the bulk API (boolean value)
 #allow_bulk = true
@@ -112,10 +109,10 @@ core_plugin = neutron_plugin_contrail.plugins.opencontrail.contrail_plugin.Neutr
 # lease times. (integer value)
 # Deprecated group/name - [DEFAULT]/dhcp_lease_time
 #dhcp_lease_duration = 86400
+dhcp_lease_duration = 600
 
 # Domain to use for building the hostnames (string value)
 #dns_domain = openstacklocal
-dns_domain = {{ server.dns_domain }}
 
 # Driver for external DNS integration. (string value)
 #external_dns_driver = <None>
@@ -149,7 +146,7 @@ notify_nova_on_port_status_changes = True
 # Send notification to nova when port data (fixed_ips/floatingip) changes so
 # nova can update its cache. (boolean value)
 #notify_nova_on_port_data_changes = true
-notify_nova_on_port_data_changes = False
+notify_nova_on_port_data_changes = True
 
 # Number of seconds between sending events to nova if there are any events to
 # send. (integer value)
@@ -158,6 +155,7 @@ notify_nova_on_port_data_changes = False
 # If True, advertise network MTU values if core plugin calculates them. MTU is
 # advertised to running instances via DHCP and RA MTU options. (boolean value)
 #advertise_mtu = true
+advertise_mtu = True
 
 # Neutron IPAM (IP address management) driver to use. If ipam_driver is not set
 # (default behavior), no IPAM driver is used. In order to use the reference
@@ -242,6 +240,7 @@ notify_nova_on_port_data_changes = False
 # Seconds to regard the agent is down; should be at least twice
 # report_interval, to be sure the agent is down for good. (integer value)
 #agent_down_time = 75
+agent_down_time = 30
 
 # Representing the resource type whose load is being reported by the agent.
 # This can be "networks", "subnets" or "ports". When specified (Default is
@@ -567,7 +566,6 @@ rpc_backend = rabbit
 # wait forever. (integer value)
 #client_socket_timeout = 900
 
-
 [agent]
 
 #
@@ -592,6 +590,7 @@ root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
 # agent_down_time, best if it is half or less than agent_down_time. (floating
 # point value)
 #report_interval = 30
+report_interval = 10
 
 # Log agent heartbeats (boolean value)
 #log_agent_heartbeats = false
@@ -701,7 +700,6 @@ root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
 # Deprecated group/name - [DEFAULT]/sql_connection
 # Deprecated group/name - [DATABASE]/sql_connection
 # Deprecated group/name - [sql]/connection
-connection = sqlite:////var/lib/neutron/neutron.sqlite
 
 # The SQLAlchemy connection string to use to connect to the slave database.
 # (string value)
@@ -780,16 +778,6 @@ connection = sqlite:////var/lib/neutron/neutron.sqlite
 
 [keystone_authtoken]
 
-identity_uri = http://{{ server.identity.host }}:5000
-auth_host = {{ server.identity.host }}
-auth_port = {{ server.identity.port }}
-auth_protocol = http
-admin_tenant_name = {{ server.identity.tenant }}
-admin_user = {{ server.identity.user }}
-admin_password = {{ server.identity.password }}
-auth_uri=http://{{ server.identity.host }}:5000
-auth_url=http://{{ server.identity.host }}:35357
-auth_region={{ server.identity.region }}
 #
 # From keystonemiddleware.auth_token
 #
@@ -1002,7 +990,6 @@ auth_region={{ server.identity.region }}
 # Name of nova region to use. Useful if keystone manages more than one region.
 # (string value)
 #region_name = <None>
-region_name = {{ server.compute.region }}
 
 # Type of the nova endpoint to use.  This endpoint will be looked up in the
 # keystone catalog and should be one of public, internal or admin. (string
@@ -1016,13 +1003,6 @@ region_name = {{ server.compute.region }}
 
 # Authentication URL (unknown value)
 #auth_url = <None>
-user_domain_id = {{ server.identity.get('domain', 'default') }}
-project_domain_id = {{ server.identity.get('domain', 'default') }}
-project_name = {{ server.identity.tenant }}
-password = {{ server.compute.password }}
-username = {{ server.compute.user }}
-auth_type = password
-auth_url = http://{{ server.identity.host }}:35357
 
 # Authentication type to load (unknown value)
 # Deprecated group/name - [DEFAULT]/auth_plugin
@@ -1201,9 +1181,7 @@ lock_path = $state_path/lock
 # messaging, messagingv2, routing, log, test, noop (multi valued)
 # Deprecated group/name - [DEFAULT]/notification_driver
 #driver =
-{%- if server.notification %}
-driver = messagingv2
-{%- endif %}
+
 # A URL representing the messaging driver to use for notifications. If not set,
 # we fall back to the same configuration used for RPC. (string value)
 # Deprecated group/name - [DEFAULT]/notification_transport_url
@@ -1282,19 +1260,19 @@ driver = messagingv2
 # Deprecated group/name - [DEFAULT]/rabbit_hosts
 #rabbit_hosts = $rabbit_host:$rabbit_port
 #
-{%- if server.message_queue.members is defined %}
-rabbit_hosts = {% for member in server.message_queue.members -%}
+{%- if neutron.message_queue.members is defined %}
+rabbit_hosts = {% for member in neutron.message_queue.members -%}
                    {{ member.host }}:{{ member.get('port', 5672) }}
                    {%- if not loop.last -%},{%- endif -%}
                {%- endfor -%}
 {%- else %}
-rabbit_host = {{ server.message_queue.host }}
-rabbit_port = {{ server.message_queue.port }}
+rabbit_host = {{ neutron.message_queue.host }}
+rabbit_port = {{ neutron.message_queue.port }}
 {%- endif %}
 
-rabbit_userid = {{ server.message_queue.user }}
-rabbit_password = {{ server.message_queue.password }}
-rabbit_virtual_host = {{ server.message_queue.virtual_host }}
+rabbit_userid = {{ neutron.message_queue.user }}
+rabbit_password = {{ neutron.message_queue.password }}
+rabbit_virtual_host = {{ neutron.message_queue.virtual_host }}
 # Connect over SSL for RabbitMQ. (boolean value)
 # Deprecated group/name - [DEFAULT]/rabbit_use_ssl
 #rabbit_use_ssl = false
@@ -1358,10 +1336,12 @@ rabbit_max_retries = 0
 # heartbeat's keep-alive fails (0 disable the heartbeat). EXPERIMENTAL (integer
 # value)
 #heartbeat_timeout_threshold = 60
+heartbeat_timeout_threshold = 0
 
 # How often times during the heartbeat_timeout_threshold we check the
 # heartbeat. (integer value)
 #heartbeat_rate = 2
+heartbeat_rate = 2
 
 # Deprecated, use rpc_backend=kombu+memory or rpc_backend=fake (boolean value)
 # Deprecated group/name - [DEFAULT]/fake_rabbit
@@ -1519,7 +1499,6 @@ rabbit_max_retries = 0
 
 # Default driver to use for quota checks (string value)
 #quota_driver = neutron.db.quota.driver.DbQuotaDriver
-quota_driver = neutron_plugin_contrail.plugins.opencontrail.quota.driver.QuotaDriver
 
 # Keep in track in the database of current resourcequota usage. Plugins which
 # do not leverage the neutron database should set this flag to False (boolean
@@ -1573,5 +1552,3 @@ quota_driver = neutron_plugin_contrail.plugins.opencontrail.quota.driver.QuotaDr
 # Sets the list of available ciphers. value should be a string in the OpenSSL
 # cipher list format. (string value)
 #ciphers = <None>
-[service_providers]
-service_provider = LOADBALANCER:Opencontrail:neutron_plugin_contrail.plugins.opencontrail.loadbalancer.driver.OpencontrailLoadbalancerDriver:default
