@@ -1,16 +1,22 @@
 
 {% set compute = salt['grains.filter_by']({
     'Debian': {
-        'pkgs': ['neutron-openvswitch-agent', 'openvswitch-switch', 'python-pycadf'],
-        'services': ['neutron-openvswitch-agent'],
+        'pkgs': ['neutron-common', 'python-pycadf'],
+        'ovs_pkgs': ['neutron-openvswitch-agent', 'openvswitch-switch'],
+        'ovs_services': ['neutron-openvswitch-agent'],
+        'linuxbridge_pkgs': ['neutron-linuxbridge-agent'],
+        'linuxbridge_services': ['neutron-linuxbridge-agent'],
         'dpdk': false,
         'audit': {
           'enabled': false
         }
     },
     'RedHat': {
-        'pkgs': ['openstack-neutron-openvswitch', 'openvswitch', 'python-pycadf'],
-        'services': ['neutron-openvswitch-agent'],
+        'pkgs': ['openstack-neutron-common', 'python-pycadf'],
+        'ovs_pkgs': ['openstack-neutron-openvswitch', 'openvswitch'],
+        'linuxbridge_pkgs': ['openstack-neutron-linuxbridge'],
+        'ovs_services': ['neutron-openvswitch-agent'],
+        'linuxbridge_services': ['neutron-linuxbridge-agent'],
         'dpdk': false,
         'audit': {
           'enabled': false
@@ -20,8 +26,12 @@
 
 {% set gateway = salt['grains.filter_by']({
     'Debian': {
-        'pkgs': ['neutron-dhcp-agent', 'neutron-openvswitch-agent', 'neutron-l3-agent', 'openvswitch-common', 'neutron-metadata-agent'],
-        'services': ['neutron-openvswitch-agent', 'neutron-metadata-agent', 'neutron-l3-agent', 'neutron-dhcp-agent'],
+        'pkgs': ['neutron-dhcp-agent', 'neutron-l3-agent', 'neutron-metadata-agent'],
+        'services': ['neutron-metadata-agent', 'neutron-l3-agent', 'neutron-dhcp-agent'],
+	'ovs_pkgs': ['neutron-openvswitch-agent', 'openvswitch-common'],
+	'ovs_services': ['neutron-openvswitch-agent'],
+	'linuxbridge_pkgs': ['ebtables', 'neutron-linuxbridge-agent'],
+	'linuxbridge_services': ['neutron-linuxbridge-agent'],
         'dpdk': false
     },
     'RedHat': {

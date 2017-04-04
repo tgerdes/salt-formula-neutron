@@ -85,19 +85,53 @@ neutron_dvr_agents:
 
 {% endif %}
 
+{%- if 'openvswitch' in compute.backend.mechanism.values()|map(attribute="driver") %}
+neutron_compute_ovs_packages:
+  pkg.installed:
+  - names: {{ compute.ovs_pkgs }}
+
 /etc/neutron/plugins/ml2/openvswitch_agent.ini:
   file.managed:
   - source: salt://neutron/files/{{ compute.version }}/openvswitch_agent.ini
   - template: jinja
   - require:
-    - pkg: neutron_compute_packages
+    - pkg: neutron_compute_ovs_packages
 
-neutron_compute_services:
+neutron_compute_agent_service:
   service.running:
-  - names: {{ compute.services }}
+  - names: {{ compute.ovs_services }}
   - enable: true
   - watch:
     - file: /etc/neutron/neutron.conf
     - file: /etc/neutron/plugins/ml2/openvswitch_agent.ini
+{%- endif %}
+
+{%- if 'linuxbridge' in compute.backend.mechanism.values()|map(attribute="driver") %}
+neutron_compute_linuxbridge_packages:
+  pkg.installed:
+  - names: {{ compute.linuxbridge_pkgs }}
+
+/etc/neutron/plugins/ml2/linuxbridge_agent.ini:
+  file.managed:
+  - source: salt://neutron/files/{{ compute.version }}/linuxbridge_agent.ini
+  - template: jinja
+  - require:
+    - pkg: neutron_compute_linuxbridge_packages
+
+/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini:
+  file.managed:
+  - makedirs: True
+  - contents:
+    - "# Workaround bug in neutron-linuxbridge-agent packaing that requires this file to exist"
+
+neutron_compute_agent_service:
+  service.running:
+  - names: {{ compute.linuxbridge_services }}
+  - enable: true
+  - watch:
+    - file: /etc/neutron/neutron.conf
+    - file: /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+    - file: /etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini
+{%- endif %}
 
 {%- endif %}
