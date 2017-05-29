@@ -707,6 +707,20 @@ Enable auditing filter, ie: CADF
           map_file: '/etc/pycadf/neutron_api_audit_map.conf'
       ....
 
+Neutron with security groups disabled
+
+.. code-block:: yaml
+
+    neutron:
+      server:
+        security_groups_enabled: False
+      ....
+      compute:
+        security_groups_enabled: False
+      ....
+      gateway:
+        security_groups_enabled: False
+
 
 Neutron Client
 --------------
