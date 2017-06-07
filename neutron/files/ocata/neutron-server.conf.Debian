@@ -43,10 +43,11 @@ service_plugins = neutron_plugin_contrail.plugins.opencontrail.loadbalancer.v2.p
 
 core_plugin = neutron.plugins.ml2.plugin.Ml2Plugin
 
-service_plugins =neutron.services.l3_router.l3_router_plugin.L3RouterPlugin,neutron.services.metering.metering_plugin.MeteringPlugin,trunk{%- if server.lbaas is defined -%}
-,lbaasv2
-{%- endif -%}{% if server.get('qos', 'True') %},neutron.services.qos.qos_plugin.QoSPlugin
-{% endif %}
+service_plugins =neutron.services.l3_router.l3_router_plugin.L3RouterPlugin,neutron.services.metering.metering_plugin.MeteringPlugin
+{%- if server.lbaas is defined -%},lbaasv2{%- endif -%}
+{%- if server.get('qos', 'True') -%},neutron.services.qos.qos_plugin.QoSPlugin{%- endif -%}
+{%- if server.get('vlan_aware_vms', False) -%},trunk{%- endif -%}
+
 {% endif %}
 
 # The service plugins Neutron will use (list value)

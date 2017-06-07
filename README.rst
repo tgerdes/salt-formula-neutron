@@ -625,6 +625,20 @@ Neutron OVS SR-IOV
             ovs:
               driver: openvswitch
 
+Neutron with VLAN-aware-VMs
+
+.. code-block:: yaml
+
+    neutron:
+      server:
+        vlan_aware_vms: true
+      ....
+      compute:
+        vlan_aware_vms: true
+      ....
+      gateway:
+        vlan_aware_vms: true
+
 Neutron Server
 --------------
 

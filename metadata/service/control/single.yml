@@ -14,6 +14,7 @@ parameters:
       tunnel_type: vxlan
       security_groups_enabled: true
       qos: false
+      vlan_aware_vms: false
       version: ${_param:neutron_version}
       bind:
         address: ${_param:single_address}
