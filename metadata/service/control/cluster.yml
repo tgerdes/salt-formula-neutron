@@ -53,3 +53,12 @@ parameters:
             host: ${_param:cluster_vip_address}
             port: 9001
             url: ${neutron:server:backend:extension:dns:protocol}://${neutron:server:backend:extension:dns:host}:${neutron:server:backend:extension:dns:port}/v2
+      cache:
+        engine: memcached
+        members:
+        - host: ${_param:cluster_node01_address}
+          port: 11211
+        - host: ${_param:cluster_node02_address}
+          port: 11211
+        - host: ${_param:cluster_node03_address}
+          port: 11211
