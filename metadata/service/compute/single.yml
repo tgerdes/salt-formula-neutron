@@ -18,6 +18,7 @@ parameters:
       dvr: false
       external_access: false
       security_groups_enabled: true
+      qos: false
       metadata:
         host: ${_param:cluster_vip_address}
         password: ${_param:metadata_password}
