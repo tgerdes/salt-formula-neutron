@@ -93,6 +93,11 @@ suites:
       pillars-from-files:
         neutron.sls: tests/pillar/control_nodvr.sls
 
+  - name: control_lbaas_octavia.sls
+    provisioner:
+      pillars-from-files:
+        neutron.sls: tests/pillar/control_lbaas_octavia.sls
+
   - name: control_single
     provisioner:
       pillars-from-files:

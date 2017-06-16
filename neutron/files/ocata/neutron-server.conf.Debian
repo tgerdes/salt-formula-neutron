@@ -44,7 +44,7 @@ service_plugins = neutron_plugin_contrail.plugins.opencontrail.loadbalancer.v2.p
 core_plugin = neutron.plugins.ml2.plugin.Ml2Plugin
 
 service_plugins =neutron.services.l3_router.l3_router_plugin.L3RouterPlugin,neutron.services.metering.metering_plugin.MeteringPlugin,trunk{%- if server.lbaas is defined -%}
-,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
+,lbaasv2
 {%- endif -%}
 
 {% endif %}
@@ -2160,10 +2160,24 @@ quota_driver = neutron_plugin_contrail.plugins.opencontrail.quota.driver.QuotaDr
 
 {%- for lbaas_name, lbaas in server.lbaas.providers.iteritems() %}
 
-{%- if lbaas.engine == "avinetworks" -%}
 service_provider=LOADBALANCERV2:{{ lbaas_name }}:{{ lbaas.get('driver_path', 'avi_lbaasv2.avi_driver.AviDriver') }}:default
 
 [{{ lbaas_name }}]
+
+{% if lbaas.engine == "octavia" %}
+
+base_url = {{ lbaas.base_url }}
+request_poll_timeout = 3000
+
+[service_auth]
+auth_version = 2
+admin_password = {{ server.identity.password }}
+admin_user = {{ server.identity.user }}
+admin_tenant_name = {{ server.identity.tenant }}
+auth_url = http://{{ server.identity.host }}:35357/v2.0
+{%- endif -%}
+
+{% if lbaas.engine == "avinetworks" %}
 address={{ lbaas.controller_address }}
 user={{ lbaas.controller_user }}
 password={{ lbaas.controller_password }}
