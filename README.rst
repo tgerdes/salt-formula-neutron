@@ -73,7 +73,8 @@ Configuration of policy.json file
           # Add key without value to remove line from policy.json
           'create_network:shared':
 
-Neutron lbaas provides on the controller node
+Neutron LBaaSv2 enablement
+--------------------------
 
 .. code-block:: yaml
 
@@ -82,9 +83,13 @@ Neutron lbaas provides on the controller node
       lbaas:
         enabled: true
         providers:
+          octavia:
+            engine: octavia
+            driver_path: 'neutron_lbaas.drivers.octavia.driver.OctaviaDriver'
+            base_url: 'http://127.0.0.1:9876'
           avi_adc:
-            enabled: true
             engine: avinetworks
+            driver_path: 'avi_lbaasv2.avi_driver.AviDriver'
             controller_address: 10.182.129.239
             controller_user: admin
             controller_password: Cloudlab2016
@@ -93,15 +98,15 @@ Neutron lbaas provides on the controller node
             engine: avinetworks
             ...
 
-Note: If you want contrail lbaas then backend is only required. Lbaas in
-pillar should be define only if it should be disabled.
+Note: If the Contrail backend is set, Opencontrail loadbalancer would be enabled
+automatically. In this case lbaas should disabled in pillar:
 
 .. code-block:: yaml
 
   neutron:
     server:
       lbaas:
-        enabled: disabled
+        enabled: false
 
 Enable CORS parameters
 
