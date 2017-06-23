@@ -1,0 +1,8 @@
+{%- from "neutron/map.jinja" import server with context %}
+{%- if server.get('enabled', False) %}
+agent:
+  input:
+    http_response:
+      neutron-api:
+        address: "http://{{ server.bind.address|replace('0.0.0.0', '127.0.0.1') }}:{{ server.bind.port }}/"
+{%- endif %}
