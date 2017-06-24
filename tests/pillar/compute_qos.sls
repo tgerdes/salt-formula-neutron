@@ -22,4 +22,4 @@ neutron:
     metadata:
       host: 127.0.0.1
       password: password
-    version: mitaka
+    version: ocata
