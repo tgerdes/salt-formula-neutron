@@ -1,6 +1,31 @@
 {%- from "neutron/map.jinja" import server with context %}
 {%- if server.get('enabled', False) %}
 
+{% if grains.os_family == 'Debian' %}
+# This is here to avoid starting up wrongly configured service and to avoid
+# issue with restart limits on systemd.
+
+policy_rcd_present:
+  file.managed:
+  - name: /usr/sbin/policy-rc.d
+  - mode: 0775
+  - contents: "exit 101"
+  - require_in:
+    - pkg: neutron_server_packages
+
+policy_rcd_absent_ok:
+  file.absent:
+  - name: /usr/sbin/policy-rc.d
+  - require:
+    - pkg: neutron_server_packages
+
+policy_rcd_absent_onfail:
+  file.absent:
+  - name: /usr/sbin/policy-rc.d
+  - onfail:
+    - pkg: neutron_server_packages
+{% endif %}
+
 neutron_server_packages:
   pkg.installed:
   - names: {{ server.pkgs }}

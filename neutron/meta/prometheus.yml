@@ -1,0 +1,58 @@
+{%- from "neutron/map.jinja" import server with context %}
+
+{%- if server.get('enabled', False) %}
+{%- raw %}
+server:
+  alert:
+    NeutronAPIDown:
+      if: >-
+        max(openstack_api_check_status{service="neutron-api"}) == 0
+      for: 2m
+      labels:
+        severity: down
+        service: "{{ $labels.service }}"
+      annotations:
+        summary: "Endpoint check for '{{ $labels.service}}' is down"
+        description: >-
+            Endpoint check for '{{ $labels.service}}' is down for 2 minutes
+{%- endraw %}
+{%- if server.get('backend', {}).engine is defined and server.backend.engine == "ml2" %}
+{%- raw %}
+    NeutronSomeAgentsDown:
+      if: >-
+        openstack_neutron_agents{state="down"} > 0 and ignoring(state) openstack_neutron_agents{state="up"} >= 2
+      for: 2m
+      labels:
+        severity: warning
+        service: "{{ $labels.service }}"
+      annotations:
+        summary: "Some {{ $labels.service }} agents down"
+        description: >-
+            {{ $value }} '{{ $labels.service}}' agent(s) is/are down for 2 minutes
+    NeutronOnlyOneAgentUp:
+      if: >-
+        openstack_neutron_agents{state="up"} == 1 and ignoring(state) openstack_neutron_agents{state=~"down|disabled"} > 0
+      for: 2m
+      labels:
+        severity: critical
+        service: "{{ $labels.service }}"
+      annotations:
+        summary: "Only one {{ $labels.service }} agent up"
+        description: >-
+            Only one '{{ $labels.service}}' agent is up for 2 minutes
+    NeutronAllAgentsDown:
+      if: >-
+        openstack_neutron_agents{state="up"} == 0
+      for: 2m
+      labels:
+        severity: down
+        service: "{{ $labels.service }}"
+      annotations:
+        summary: "All {{ $labels.service }} agents down"
+        description: >-
+            All '{{ $labels.service}}' agents are down for 2 minutes
+{%- endraw %}
+{%- endif %}
+{%- endif %}
+
+

@@ -78,6 +78,17 @@ suites:
       pillars-from-files:
         neutron.sls: tests/pillar/compute_sriov.sls
 
+  - name: compute_qos_sriov
+    provisioner:
+      pillars-from-files:
+        neutron.sls: tests/pillar/compute_qos_sriov.sls
+
+  - name: compute_qos
+    provisioner:
+      pillars-from-files:
+        neutron.sls: tests/pillar/compute_qos.sls
+
+
   - name: control_cluster
     provisioner:
       pillars-from-files:
@@ -93,10 +104,20 @@ suites:
       pillars-from-files:
         neutron.sls: tests/pillar/control_nodvr.sls
 
+  - name: control_lbaas_octavia.sls
+    provisioner:
+      pillars-from-files:
+        neutron.sls: tests/pillar/control_lbaas_octavia.sls
+
   - name: control_single
     provisioner:
       pillars-from-files:
         neutron.sls: tests/pillar/control_single.sls
+
+  - name: control_qos
+    provisioner:
+      pillars-from-files:
+        neutron.sls: tests/pillar/control_qos.sls
 
   - name: gateway_dvr
     provisioner:
@@ -107,4 +128,10 @@ suites:
     provisioner:
       pillars-from-files:
         neutron.sls: tests/pillar/gateway_legacy.sls
+
+  - name: gateway_qos
+    provisioner:
+      pillars-from-files:
+        neutron.sls: tests/pillar/gateway_qos.sls
+
 # vim: ft=yaml sw=2 ts=2 sts=2 tw=125

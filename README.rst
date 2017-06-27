@@ -8,7 +8,7 @@ nova).
 
 Starting in the Folsom release, Neutron is a core and supported part of the
 OpenStack platform (for Essex, we were an "incubated" project, which means use
-is suggested only for those who really know what they're doing with Neutron). 
+is suggested only for those who really know what they're doing with Neutron).
 
 Sample Pillars
 ==============
@@ -73,7 +73,8 @@ Configuration of policy.json file
           # Add key without value to remove line from policy.json
           'create_network:shared':
 
-Neutron lbaas provides on the controller node
+Neutron LBaaSv2 enablement
+--------------------------
 
 .. code-block:: yaml
 
@@ -82,9 +83,13 @@ Neutron lbaas provides on the controller node
       lbaas:
         enabled: true
         providers:
+          octavia:
+            engine: octavia
+            driver_path: 'neutron_lbaas.drivers.octavia.driver.OctaviaDriver'
+            base_url: 'http://127.0.0.1:9876'
           avi_adc:
-            enabled: true
             engine: avinetworks
+            driver_path: 'avi_lbaasv2.avi_driver.AviDriver'
             controller_address: 10.182.129.239
             controller_user: admin
             controller_password: Cloudlab2016
@@ -93,15 +98,15 @@ Neutron lbaas provides on the controller node
             engine: avinetworks
             ...
 
-Note: If you want contrail lbaas then backend is only required. Lbaas in
-pillar should be define only if it should be disabled.
+Note: If the Contrail backend is set, Opencontrail loadbalancer would be enabled
+automatically. In this case lbaas should disabled in pillar:
 
 .. code-block:: yaml
 
   neutron:
     server:
       lbaas:
-        enabled: disabled
+        enabled: false
 
 Enable CORS parameters
 
@@ -125,11 +130,11 @@ With DVR for East-West and Network node for North-South.
 
 This use case describes a model utilising VxLAN overlay with DVR. The DVR
 routers will only be utilized for traffic that is router within the cloud
-infrastructure and that remains encapsulated. External traffic will be 
-routed to via the network nodes. 
+infrastructure and that remains encapsulated. External traffic will be
+routed to via the network nodes.
 
-The intention is that each tenant will require at least two (2) vrouters 
-one to be utilised 
+The intention is that each tenant will require at least two (2) vrouters
+one to be utilised
 
 Neutron Server
 
@@ -201,7 +206,7 @@ Network Node
           tenant_network_types: "flat,vxlan"
           mechanism:
             ovs:
-              driver: openvswitch  
+              driver: openvswitch
 
 Compute Node
 
@@ -224,7 +229,7 @@ Compute Node
         external_access: false # Compute node with DVR for east-west only, Network Node has True as default
         metadata:
           host: 127.0.0.1
-          password: pass       
+          password: pass
         backend:
           engine: ml2
           tenant_network_types: "flat,vxlan"
@@ -312,7 +317,7 @@ Network Node
           tenant_network_types: "flat,vxlan"
           mechanism:
             ovs:
-              driver: openvswitch  
+              driver: openvswitch
 
 Compute Node
 
@@ -331,7 +336,7 @@ Compute Node
           virtual_host: '/openstack'
         local_ip: 192.168.20.20 # br-mesh ip address
         external_access: False
-        dvr: False      
+        dvr: False
         backend:
           engine: ml2
           tenant_network_types: "flat,vxlan"
@@ -344,8 +349,8 @@ Neutron VXLAN tenant networks with Network Nodes with DVR
 
 With DVR for East-West and North-South, DVR everywhere, Network node for SNAT.
 
-This section describes a network solution that utilises VxLAN 
-overlay networks with DVR with North-South and East-West. Network 
+This section describes a network solution that utilises VxLAN
+overlay networks with DVR with North-South and East-West. Network
 Node is used only for SNAT.
 
 Neutron Server
@@ -419,7 +424,7 @@ Network Node
           tenant_network_types: "flat,vxlan"
           mechanism:
             ovs:
-              driver: openvswitch  
+              driver: openvswitch
 
 Compute Node
 
@@ -438,7 +443,7 @@ Compute Node
           virtual_host: '/openstack'
         local_ip: 192.168.20.20 # br-mesh ip address
         dvr: True
-        external_access: True     
+        external_access: True
         agent_mode: dvr
         availability_zone: az1
         metadata:
@@ -636,6 +641,20 @@ Neutron OVS SR-IOV
             ovs:
               driver: openvswitch
 
+Neutron with VLAN-aware-VMs
+
+.. code-block:: yaml
+
+    neutron:
+      server:
+        vlan_aware_vms: true
+      ....
+      compute:
+        vlan_aware_vms: true
+      ....
+      gateway:
+        vlan_aware_vms: true
+
 Neutron Server
 --------------
 
@@ -722,6 +741,20 @@ Enable auditing filter, ie: CADF
           filter_factory: 'keystonemiddleware.audit:filter_factory'
           map_file: '/etc/pycadf/neutron_api_audit_map.conf'
       ....
+
+Neutron with security groups disabled
+
+.. code-block:: yaml
+
+    neutron:
+      server:
+        security_groups_enabled: False
+      ....
+      compute:
+        security_groups_enabled: False
+      ....
+      gateway:
+        security_groups_enabled: False
 
 
 Neutron Client

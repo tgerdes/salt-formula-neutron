@@ -89,11 +89,21 @@ dashboard:
               cluster_status:
                 rawQuery: true
                 query: SELECT last(value) FROM cluster_status WHERE cluster_name = 'neutron-data' AND environment_label = '$environment' AND $timeFilter GROUP BY time($interval) fill(null)
-  neutron:
+  neutron_influxdb:
+    datasource: influxdb
     format: json
     template: neutron/files/grafana_dashboards/neutron_openvswitch_influxdb.json
+  neutron_prometheus:
+    datasource: prometheus
+    format: json
+    template: neutron/files/grafana_dashboards/neutron_openvswitch_prometheus.json
 {%- elif pillar.neutron.server is defined %}
-  neutron:
+  neutron_influxdb:
+    datasource: influxdb
     format: json
     template: neutron/files/grafana_dashboards/neutron_influxdb.json
+  neutron_prometheus:
+    datasource: prometheus
+    format: json
+    template: neutron/files/grafana_dashboards/neutron_prometheus.json
 {%- endif %}

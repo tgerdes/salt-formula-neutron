@@ -9,6 +9,7 @@ parameters:
     server:
       enabled: true
       dns_domain: novalocal
+      vlan_aware_vms: false
       version: ${_param:neutron_version}
       bind:
         address: ${_param:cluster_local_address}

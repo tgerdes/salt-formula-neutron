@@ -17,6 +17,9 @@ parameters:
       local_ip: ${_param:tenant_address}
       dvr: false
       external_access: True
+      security_groups_enabled: true
+      qos: false
+      vlan_aware_vms: false
       metadata:
         host: ${_param:cluster_vip_address}
         password: ${_param:metadata_password}
