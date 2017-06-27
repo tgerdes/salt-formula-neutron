@@ -51,8 +51,17 @@ server:
         summary: "All {{ $labels.service }} agents down"
         description: >-
             All '{{ $labels.service}}' agents are down for 2 minutes
+    NeutronErrorLogsTooHigh:
 {%- endraw %}
+      {%- set log_threshold = prometheus_server.get('alert', {}).get('NeutronErrorLogsTooHigh', {}).get('var', {}).get('threshold', 0.2 ) %}
+      if: >-
+        sum(rate(log_messages{service="neutron",level=~"error|emergency|fatal"}[5m])) without (level) > {{ log_threshold }}
+{%- raw %}
+      labels:
+        severity: warning
+        service: "{{ $labels.service }}"
+      annotations:
+        summary: 'Too many errors in {{ $labels.service }} logs'
+        description: 'The rate of errors in {{ $labels.service }} logs over the last 5 minutes is too high on node {{ $labels.host }} (current value={{ $value }}, threshold={%- endraw %}{{ log_threshold }}).'
 {%- endif %}
 {%- endif %}
-
-
