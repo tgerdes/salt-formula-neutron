@@ -5,4 +5,5 @@ agent:
     http_response:
       neutron-api:
         address: "http://{{ server.bind.address|replace('0.0.0.0', '127.0.0.1') }}:{{ server.bind.port }}/"
+        expected_code: 200
 {%- endif %}
