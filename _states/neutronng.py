@@ -409,7 +409,7 @@ def floatingip_present(name=None,
 
 def security_group_present(name=None,
                            tenant=None,
-                           description=None,
+                           description='',
                            rules=[],
                            profile=None,
                            endpoint_type=None):
