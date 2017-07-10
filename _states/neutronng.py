@@ -527,6 +527,109 @@ def security_group_present(name=None,
     # Security group already exists, but the specified rules were added to it.
     return _updated(name, 'security_group', {'New Rules': new_rules})
 
+
+def port_present(network_name, profile=None, endpoint_type=None, name=None,
+                 tenant=None, description='', fixed_ips=None, device_id=None,
+                 device_owner=None, binding_host_id=None, admin_state_up=True,
+                 mac_address=None, vnic_type=None, binding_profile=None,
+                 security_groups=None, extra_dhcp_opt=None, qos_policy=None,
+                 allowed_address_pair=None, dns_name=None):
+    """
+    Ensure the port is present with specified parameters.
+
+    :param network_name: Name of the network to create port in
+    :param profile: Authentication profile
+    :param endpoint_type: Endpoint type
+    :param name: Name of this port
+    :param tenant: Tenant in which the port should be created, avaiable for
+                   admin only.
+    :param description: Port description
+    :param fixed_ips: Desired IP and/or subnet for this port:
+                      subnet_id=<name_or_id>,ip_address=<ip>.
+    :param device_id: Device ID of this port
+    :param device_owner: Device owner of this port
+    :param binding_host_id: he ID of the host where the port resides.
+    :param admin_state_up: Admin state of this port
+    :param mac_address: MAC address of this port
+    :param vnic_type: VNIC type for this port
+    :param binding_profile: Custom data to be passed as binding:profile
+    :param security_groups: Security group associated with the port
+    :param extra_dhcp_opt: Extra dhcp options to be assigned to this port:
+                           opt_na me=<dhcp_option_name>,opt_value=<value>,
+                                     ip_version={4, 6}
+    :param qos_policy: ID or name of the QoS policy that shouldbe attached to
+                       the resource
+    :param allowed_address_pair: ip_address=IP_ADDR|CIDR[,mac_address=MAC_ADDR]
+                                 Allowed address pair associated with the port.
+                                 "ip_address" parameter is required. IP address
+                                 or CIDR can be specified for "ip_address".
+                                 "mac_address" parameter is optional.
+    :param dns_name: Assign DNS name to the port (requires DNS integration
+                     extension)
+    """
+
+    connection_args = _auth(profile, endpoint_type)
+    tenant_id = _get_tenant_id(tenant_name=tenant, **connection_args)
+    network_id = None
+    port_exists = False
+
+    port_arguments = _get_non_null_args(
+        name=name, tenant_id=tenant_id, description=description,
+        fixed_ips=fixed_ips, device_id=device_id, device_owner=device_owner,
+        admin_state_up=admin_state_up,
+        mac_address=mac_address, vnic_type=vnic_type,
+        binding_profile=binding_profile,
+        extra_dhcp_opt=extra_dhcp_opt, qos_policy=qos_policy,
+        allowed_address_pair=allowed_address_pair, dns_name=dns_name)
+    if binding_host_id:
+        port_arguments['binding:host_id'] = binding_host_id
+    if security_groups:
+        sec_group_list = []
+        for sec_group_name in security_groups:
+            security_group = _neutron_module_call(
+                'list_security_groups', name=sec_group_name, **connection_args)
+            if security_group:
+                sec_group_list.append(security_group[sec_group_name]['id'])
+        port_arguments['security_groups'] = sec_group_list
+
+    existing_networks = _neutron_module_call(
+        'list_networks', tenant_id=tenant_id, name=network_name,
+        **connection_args)['networks']
+    if len(existing_networks) == 0:
+        LOG.error("Can't find network with name: {0}".format(network_name))
+    elif len(existing_networks) == 1:
+        network_id = existing_networks[0]['id']
+    elif len(existing_networks) > 1:
+        LOG.error("Multiple networks with name: {0} found.".format(network_name))
+
+    if network_id is None:
+        return _create_failed(name, 'port')
+
+    port_arguments['network_id'] = network_id
+
+    existing_ports = _neutron_module_call(
+        'list_ports', network_id=network_id, tenant_id=tenant_id,
+        **connection_args)
+
+    if name:
+        for key, value in existing_ports.iteritems():
+            try:
+                if value['name'] == name and value['tenant_id'] == tenant_id:
+                    port_exists = True
+                    break
+            except KeyError:
+                pass
+
+    if not port_exists:
+        port_arguments.update(connection_args)
+        res = _neutron_module_call('create_port', **port_arguments)['port']
+        if res['name'] == name:
+            return _created(name, 'port', res)
+        return _create_failed(name, 'port')
+    else:
+        return _no_change('for instance {0}'.format(name), 'port')
+
+
 def _created(name, resource, resource_definition):
     changes_dict = {'name': name,
                     'changes': resource_definition,
