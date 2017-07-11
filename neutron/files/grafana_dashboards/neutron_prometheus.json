@@ -566,7 +566,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "openstack_neutron_ports{owner=~\"compute:.*\"}",
+              "expr": "openstack_neutron_ports{owner=~\"compute:.*\",state=\"active\"}",
               "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
