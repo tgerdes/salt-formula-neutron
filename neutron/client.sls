@@ -108,7 +108,9 @@ neutron_openstack_router_{{ router_name }}:
 openstack_security_group_{{ security_group_name }}:
   neutronng.security_group_present:
     - name: {{ security_group_name }}
+    {%- if security_group.description is defined %}
     - description: {{ security_group.description }}
+    {%- endif %}
     - rules: {{ security_group.rules }}
     - profile: {{ identity_name }}
     - tenant: {{ security_group.tenant }}
