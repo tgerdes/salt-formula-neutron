@@ -328,9 +328,7 @@ def create_port(neutron_interface, **port_params):
     .. code-block:: bash
         salt '*' neutronng.create_port network_id='openstack-network-id'
     '''
-    response = neutron_interface.create_port({'port': port_params})
-    if 'port' in response and 'id' in response['port']:
-        return response['port']['id']
+    return neutron_interface.create_port({'port': port_params})
 
 
 @_autheticate

@@ -7,6 +7,26 @@ neutron_client_packages:
 
 
 {%- for identity_name, identity in client.server.iteritems() %}
+
+{%- if identity.security_group is defined %}
+
+{%- for security_group_name, security_group in identity.security_group.iteritems() %}
+openstack_security_group_{{ security_group_name }}:
+  neutronng.security_group_present:
+    - name: {{ security_group_name }}
+    {%- if security_group.description is defined %}
+    - description: {{ security_group.description }}
+    {%- endif %}
+    - rules: {{ security_group.rules }}
+    - profile: {{ identity_name }}
+    - tenant: {{ security_group.tenant }}
+    {%- if identity.endpoint_type is defined %}
+    - endpoint_type: {{ identity.endpoint_type }}
+    {%- endif %}
+{%- endfor %}
+
+{%- endif %}
+
 {%- if identity.network is defined %}
 
 {%- for network_name, network in identity.network.iteritems() %}
@@ -80,6 +100,66 @@ neutron_openstack_subnet_{{ subnet_name }}:
 
 {%- endif %}
 
+{%- if network.port is defined %}
+
+{%- for port_name, port in network.port.iteritems() %}
+neutron_openstack_port_{{ port_name }}:
+  neutronng.port_present:
+    - network_name: {{ network_name }}
+    - name: {{ port_name }}
+    - profile: {{ identity_name }}
+    - tenant: {{ network.tenant }}
+    {%- if identity.endpoint_type is defined %}
+    - endpoint_type: {{ identity.endpoint_type }}
+    {%- endif %}
+    {%- if port.description is defined %}
+    - description: {{ port.description  }}
+    {%- endif %}
+    {%- if port.fixed_ips is defined %}
+    - fixed_ips: {{ port.fixed_ips }}
+    {%- endif %}
+    {%- if port.device_id is defined %}
+    - device_id: {{ port.device_id }}
+    {%- endif %}
+    {%- if port.device_owner is defined %}
+    - device_owner: {{ port.device_owner }}
+    {%- endif %}
+    {%- if port.binding_host_id is defined %}
+    - binding_host_id: {{ port.binding_host_id }}
+    {%- endif %}
+    {%- if port.admin_state_up is defined %}
+    - admin_state_up: {{ port.admin_state_up }}
+    {%- endif %}
+    {%- if port.mac_address is defined %}
+    - mac_address: {{ port.mac_address }}
+    {%- endif %}
+    {%- if port.vnic_type is defined %}
+    - vnic_type: {{ port.vnic_type }}
+    {%- endif %}
+    {%- if port.binding_profile is defined %}
+    - binding_profile: {{ port.binding_profile }}
+    {%- endif %}
+    {%- if port.security_groups is defined %}
+    - security_groups: {{ port.security_groups }}
+    {%- endif %}
+    {%- if port.extra_dhcp_opt is defined %}
+    - extra_dhcp_opt: {{ port.extra_dhcp_opt }}
+    {%- endif %}
+    {%- if port.qos_policy is defined %}
+    - qos_policy: {{ port.qos_policy }}
+    {%- endif %}
+    {%- if port.allowed_address_pair is defined %}
+    - allowed_address_pair: {{ port.allowed_address_pair }}
+    {%- endif %}
+    {%- if port.dns_name is defined %}
+    - dns_name: {{ port.dns_name }}
+    {%- endif %}
+    - require:
+      - neutronng: neutron_openstack_network_{{ network_name }}
+{%- endfor %}
+
+{%- endif %}
+
 {%- endfor %}
 
 {%- endif %}
@@ -95,25 +175,6 @@ neutron_openstack_router_{{ router_name }}:
     - profile: {{ identity_name }}
     - tenant: {{ router.tenant }}
     - admin_state_up: {{ router.admin_state_up }}
-    {%- if identity.endpoint_type is defined %}
-    - endpoint_type: {{ identity.endpoint_type }}
-    {%- endif %}
-{%- endfor %}
-
-{%- endif %}
-
-{%- if identity.security_group is defined %}
-
-{%- for security_group_name, security_group in identity.security_group.iteritems() %}
-openstack_security_group_{{ security_group_name }}:
-  neutronng.security_group_present:
-    - name: {{ security_group_name }}
-    {%- if security_group.description is defined %}
-    - description: {{ security_group.description }}
-    {%- endif %}
-    - rules: {{ security_group.rules }}
-    - profile: {{ identity_name }}
-    - tenant: {{ security_group.tenant }}
     {%- if identity.endpoint_type is defined %}
     - endpoint_type: {{ identity.endpoint_type }}
     {%- endif %}
