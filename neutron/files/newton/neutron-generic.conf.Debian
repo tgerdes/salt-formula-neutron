@@ -592,7 +592,7 @@ root_helper = sudo /usr/bin/neutron-rootwrap /etc/neutron/rootwrap.conf
 #use_helper_for_ns_read = true
 
 # Root helper daemon application to use when possible. (string value)
-#root_helper_daemon = <None>
+root_helper_daemon = sudo neutron-rootwrap-daemon /etc/neutron/rootwrap.conf
 
 # Seconds between nodes reporting state to server; should be less than
 # agent_down_time, best if it is half or less than agent_down_time. (floating
