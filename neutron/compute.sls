@@ -59,6 +59,7 @@ neutron_dvr_agents:
       - neutron-l3-agent
       - neutron-metadata-agent
     - watch:
+      - file: /etc/neutron/neutron.conf
       - file: /etc/neutron/l3_agent.ini
       - file: /etc/neutron/metadata_agent.ini
     - require:
