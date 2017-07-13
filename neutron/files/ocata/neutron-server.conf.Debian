@@ -179,6 +179,7 @@ global_physnet_mtu = {{ server.get('global_physnet_mtu', '1500') }}
 
 # Number of RPC worker processes for service. (integer value)
 #rpc_workers = 1
+rpc_workers = {{ grains.num_cpus }}
 
 # Number of RPC worker processes dedicated to state reports queue. (integer
 # value)
