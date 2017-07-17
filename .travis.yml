@@ -17,15 +17,35 @@ install:
   - bundle install
 
 env:
-    - PLATFORM=trevorj/salty-whales:trusty
-    - PLATFORM=trevorj/salty-whales:xenial
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_dpdk
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_dpdk
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_dvr
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_dvr
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_legacy
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_legacy
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_nonexternal_dvr
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_nonexternal_dvr
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_sriov
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_sriov
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=control_cluster
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_cluster
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=control_dvr
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_dvr
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=control_nodvr
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_nodvr
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=control_single
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_single
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway_dvr
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway_dvr
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway_legacy
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway_legacy
 
 before_script:
   - set -o pipefail
   - make test | tail
 
 script:
-  - test ! -e .kitchen.yml || bundle exec kitchen test -t tests/integration
+  - KITCHEN_LOCAL_YAML=.kitchen.travis.yml bundle exec kitchen test -t tests/integration
 
 notifications:
   webhooks:
