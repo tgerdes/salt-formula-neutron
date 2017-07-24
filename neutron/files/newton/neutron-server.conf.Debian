@@ -222,6 +222,7 @@ rpc_workers = {{ grains.num_cpus }}
 # Number of RPC worker processes dedicated to state reports queue (integer
 # value)
 #rpc_state_report_workers = 1
+rpc_state_report_workers = 4
 
 # Range of seconds to randomly delay when starting the periodic task scheduler
 # to reduce stampeding. (Disable by setting to 0) (integer value)
@@ -333,6 +334,7 @@ router_scheduler_driver = neutron.scheduler.l3_agent_scheduler.ChanceScheduler
 # Automatically reschedule routers from offline L3 agents to online L3 agents.
 # (boolean value)
 #allow_automatic_l3agent_failover = false
+allow_automatic_l3agent_failover = true
 
 # Enable HA mode for virtual routers. (boolean value)
 #l3_ha = false
@@ -341,6 +343,7 @@ l3_ha = {{ server.get('l3_ha', 'False') }}
 # Maximum number of L3 agents which a HA router will be scheduled on. If it is
 # set to 0 then the router will be scheduled on every agent. (integer value)
 #max_l3_agents_per_router = 3
+max_l3_agents_per_router = 0
 
 # Minimum number of L3 agents which a HA router will be scheduled on. If it is
 # set to 0 then the router will be scheduled on every agent. (integer value)
@@ -542,7 +545,7 @@ executor_thread_pool_size = 70
 
 # Seconds to wait for a response from a call. (integer value)
 #rpc_response_timeout = 60
-rpc_response_timeout=60
+rpc_response_timeout=120
 
 # A URL representing the messaging driver to use and its full configuration. If
 # not set, we fall back to the rpc_backend option and driver specific
@@ -785,7 +788,7 @@ idle_timeout = 3600
 # Deprecated group/name - [DEFAULT]/sql_max_pool_size
 # Deprecated group/name - [DATABASE]/sql_max_pool_size
 #max_pool_size = <None>
-max_pool_size = 20
+max_pool_size = {{ [grains.num_cpus * 5, 30] | sort | first }}
 
 # Maximum number of database connection retries during startup. Set to -1 to
 # specify an infinite retry count. (integer value)
