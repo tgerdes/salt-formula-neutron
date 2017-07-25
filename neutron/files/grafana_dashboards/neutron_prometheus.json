@@ -70,7 +70,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "openstack_api_check_status{service=\"neutron-api\"}",
+              "expr": "openstack_api_check_status{service=\"neutron\"}",
               "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
