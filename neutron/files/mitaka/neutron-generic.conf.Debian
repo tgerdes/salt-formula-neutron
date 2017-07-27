@@ -113,6 +113,9 @@ dhcp_lease_duration = 600
 
 # Domain to use for building the hostnames (string value)
 #dns_domain = openstacklocal
+{% if neutron.get('dns_domain', False) %}
+dns_domain = {{ neutron.dns_domain }}
+{% endif %}
 
 # Driver for external DNS integration. (string value)
 #external_dns_driver = <None>

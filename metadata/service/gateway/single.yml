@@ -6,6 +6,7 @@ parameters:
   neutron:
     gateway:
       enabled: true
+      dns_domain: novalocal
       version: ${_param:neutron_version}
       message_queue:
         engine: rabbitmq
