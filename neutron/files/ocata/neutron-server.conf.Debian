@@ -39,11 +39,18 @@ api_extensions_path = extensions:/usr/lib/python2.7/dist-packages/neutron_plugin
 core_plugin = neutron_plugin_contrail.plugins.opencontrail.contrail_plugin.NeutronPluginContrailCoreV2
 
 service_plugins = neutron_plugin_contrail.plugins.opencontrail.loadbalancer.v2.plugin.LoadBalancerPluginV2
-{% elif server.backend.engine == "ml2" %}
+
+{% elif server.backend.engine in ["ml2", "ovn"] %}
 
 core_plugin = neutron.plugins.ml2.plugin.Ml2Plugin
 
-service_plugins =neutron.services.l3_router.l3_router_plugin.L3RouterPlugin,neutron.services.metering.metering_plugin.MeteringPlugin
+{% if server.backend.engine == "ml2" %}
+{% set l3_plugin = 'neutron.services.l3_router.l3_router_plugin.L3RouterPlugin' %}
+{% elif server.backend.engine == "ovn" %}
+{% set l3_plugin = 'networking_ovn.l3.l3_ovn.OVNL3RouterPlugin' %}
+{% endif %}
+
+service_plugins ={{ l3_plugin }}, neutron.services.metering.metering_plugin.MeteringPlugin
 {%- if server.lbaas is defined -%},lbaasv2{%- endif -%}
 {%- if fwaas.get('enabled', False) -%},{{ fwaas[fwaas.api_version]['service_plugin'] }}{%- endif -%}
 {%- if server.get('qos', 'True') -%},neutron.services.qos.qos_plugin.QoSPlugin{%- endif -%}
@@ -838,7 +845,7 @@ allow_headers = {{ server.cors.allow_headers }}
 # Deprecated group/name - [DEFAULT]/sql_connection
 # Deprecated group/name - [DATABASE]/sql_connection
 # Deprecated group/name - [sql]/connection
-{% if server.backend.engine == "ml2" %}
+{% if server.backend.engine in ["ml2", "ovn"] %}
 connection = {{ server.database.engine }}+pymysql://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}?charset=utf8
 {% else %}
 connection = sqlite:////var/lib/neutron/neutron.sqlite

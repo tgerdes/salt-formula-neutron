@@ -32,6 +32,7 @@ env:
     - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_qos_sriov
     - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_qos
     - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_qos
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_ovn
     - PLATFORM=trevorj/salty-whales:trusty SUITE=control_cluster
     - PLATFORM=trevorj/salty-whales:xenial SUITE=control_cluster
     - PLATFORM=trevorj/salty-whales:trusty SUITE=control_dvr
@@ -44,6 +45,7 @@ env:
     - PLATFORM=trevorj/salty-whales:xenial SUITE=control_fwaas_v1
     - PLATFORM=trevorj/salty-whales:trusty SUITE=control_qos
     - PLATFORM=trevorj/salty-whales:xenial SUITE=control_qos
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_ovn
     - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway_dvr
     - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway_dvr
     - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway_legacy

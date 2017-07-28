@@ -1,6 +1,7 @@
 {% from "neutron/map.jinja" import compute, fwaas, system_cacerts_file with context %}
 {%- if compute.enabled %}
 
+{% if compute.backend.engine == "ml2" %}
 neutron_compute_packages:
   pkg.installed:
   - names: {{ compute.pkgs }}
@@ -132,4 +133,52 @@ rabbitmq_ca_neutron_compute:
 {%- endif %}
 {%- endif %}
 
+{%- elif compute.backend.engine == "ovn" %}
+
+ovn_packages:
+  pkg.installed:
+  - names: {{ compute.pkgs_ovn }}
+
+{%- if not grains.get('noservices', False) %}
+
+remote_ovsdb_access:
+  cmd.run:
+  - name: "ovs-vsctl set open .
+  external-ids:ovn-remote=tcp:{{ compute.controller_vip }}:6642"
+
+enable_overlays:
+  cmd.run:
+  - name: "ovs-vsctl set open . external-ids:ovn-encap-type=geneve,vxlan"
+
+configure_local_endpoint:
+  cmd.run:
+  - name: "ovs-vsctl set open .
+  external-ids:ovn-encap-ip={{ compute.local_ip }}"
+
+{%- if compute.get('external_access', True) %}
+
+set_bridge_external_id:
+  cmd.run:
+  - name: "ovs-vsctl --no-wait br-set-external-id
+   {{ compute.external_bridge }} bridge-id {{ compute.external_bridge }}"
+
+set_bridge_mapping:
+  cmd.run:
+  - name: "ovs-vsctl set open .
+   external-ids:ovn-bridge-mappings=physnet1:{{ compute.external_bridge }}"
+
+{%- endif %}
+
+ovn_services:
+  service.running:
+  - names: {{ compute.services_ovn }}
+  - enable: true
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
+  - require:
+    - pkg: ovn_packages
+
+{%- endif %}
+{%- endif %}
 {%- endif %}

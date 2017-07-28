@@ -7,7 +7,7 @@
 # neutron.conf
 #NEUTRON_PLUGIN_CONFIG="/etc/neutron/plugins/openvswitch/ovs_neutron_plugin.ini"
 
-{%- if server.backend.engine == "ml2" %}
+{%- if server.backend.engine in ["ml2", "ovn"] %}
 NEUTRON_PLUGIN_CONFIG="/etc/neutron/plugins/ml2/ml2_conf.ini"
 {%- endif %}
 

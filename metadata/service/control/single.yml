@@ -15,6 +15,7 @@ parameters:
       qos: false
       vlan_aware_vms: false
       version: ${_param:neutron_version}
+      controller_vip: ${_param:single_address}
       bind:
         address: ${_param:single_address}
         port: 9696

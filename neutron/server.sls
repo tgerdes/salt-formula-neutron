@@ -72,7 +72,7 @@ neutron_server_service:
 
 {%- endif %}
 
-{% if server.backend.engine == "ml2" %}
+{% if server.backend.engine in ["ml2", "ovn"] %}
 
 /etc/neutron/plugins/ml2/ml2_conf.ini:
   file.managed:
@@ -152,6 +152,41 @@ rule_{{ name }}_absent:
   - watch_in:
     - service: neutron_server_services
 
+{%- endif %}
+
+{%- if server.backend.engine == "ovn" %}
+
+ovn_packages:
+  pkg.installed:
+  - names: {{ server.pkgs_ovn }}
+
+{%- if not grains.get('noservices', False) %}
+
+remote_ovsdb_access:
+  cmd.run:
+  - name: "ovs-appctl -t ovsdb-server ovsdb-server/add-remote
+  ptcp:6640:{{ server.controller_vip }}"
+
+open_ovs_port:
+  iptables.append:
+    - table: filter
+    - chain: INPUT
+    - jump: ACCEPT
+    - dport: 6640
+    - proto: tcp
+    - save: True
+
+ovn_services:
+  service.running:
+  - names: {{ server.services_ovn }}
+  - enable: true
+  {%- if grains.get('noservices') %}
+  - onlyif: /bin/false
+  {%- endif %}
+  - require:
+    - pkg: ovn_packages
+
+{%- endif %}
 {%- endif %}
 
 {%- if server.backend.engine == "midonet" %}

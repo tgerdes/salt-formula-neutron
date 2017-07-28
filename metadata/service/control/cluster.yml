@@ -11,6 +11,7 @@ parameters:
       dns_domain: novalocal
       vlan_aware_vms: false
       version: ${_param:neutron_version}
+      controller_vip: ${_param:cluster_vip_address}
       bind:
         address: ${_param:cluster_local_address}
         port: 9696

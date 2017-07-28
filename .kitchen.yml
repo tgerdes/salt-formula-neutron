@@ -93,6 +93,11 @@ suites:
       pillars-from-files:
         neutron.sls: tests/pillar/compute_qos.sls
 
+  - name: compute_ovn
+    provisioner:
+      pillars-from-files:
+        neutron.sls: tests/pillar/compute_ovn.sls
+
   - name: control_cluster
     provisioner:
       pillars-from-files:
@@ -127,6 +132,11 @@ suites:
     provisioner:
       pillars-from-files:
         neutron.sls: tests/pillar/control_qos.sls
+
+  - name: control_ovn
+    provisioner:
+      pillars-from-files:
+        neutron.sls: tests/pillar/control_ovn.sls
 
   - name: gateway_dvr
     provisioner:

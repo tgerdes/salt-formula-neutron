@@ -591,6 +591,7 @@ Compute node
               driver: openvswitch
 
 Advanced Neutron Features (DPDK, SR-IOV)
+----------------------------------------
 
 Neutron OVS DPDK
 
@@ -648,6 +649,7 @@ Neutron OVS SR-IOV
               driver: openvswitch
 
 Neutron with VLAN-aware-VMs
+---------------------------
 
 .. code-block:: yaml
 
@@ -660,6 +662,34 @@ Neutron with VLAN-aware-VMs
       ....
       gateway:
         vlan_aware_vms: true
+
+Neutron with OVN
+----------------
+
+Control node:
+
+.. code-block:: yaml
+
+    neutron:
+      server:
+        backend:
+          engine: ovn
+          mechanism:
+            ovn:
+              driver: ovn
+          tenant_network_types: "geneve,flat"
+
+Compute node:
+
+.. code-block:: yaml
+
+    neutron:
+      compute:
+        local_ip: 10.2.0.105
+        controller_vip: 10.1.0.101
+        external_access: false
+        backend:
+          engine: ovn
 
 Neutron Server
 --------------
@@ -691,7 +721,6 @@ Neutron Server with Midonet
           port: 8181
           user: admin
           password: password
-
 
 Neutron Keystone region
 

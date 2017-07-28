@@ -6,7 +6,9 @@
 {% set compute = salt['grains.filter_by']({
     'Debian': {
         'pkgs': ['neutron-openvswitch-agent', 'openvswitch-switch', 'python-pycadf'],
+        'pkgs_ovn': ['ovn-common', 'ovn-host'],
         'services': ['neutron-openvswitch-agent'],
+        'services_ovn': ['ovn-host'],
         'dpdk': false,
         'audit': {
           'enabled': false
@@ -14,7 +16,9 @@
     },
     'RedHat': {
         'pkgs': ['openstack-neutron-openvswitch', 'openvswitch', 'python-pycadf'],
+        'pkgs_ovn': ['openvswitch-ovn'],
         'services': ['neutron-openvswitch-agent'],
+        'services_ovn': ['ovn-host'],
         'dpdk': false,
         'audit': {
           'enabled': false
@@ -38,8 +42,10 @@
 {% set server = salt['grains.filter_by']({
     'Debian': {
         'pkgs': ['neutron-server','python-neutron-lbaas', 'gettext-base', 'python-pycadf'],
+        'pkgs_ovn': ['python-networking-ovn', 'ovn-common', 'ovn-central'],
         'pkgs_ml2': ['neutron-plugin-ml2'],
         'services': ['neutron-server'],
+        'services_ovn': ['ovn-central'],
         'notification': False,
         'dpdk': false,
         'cors': {},
@@ -50,7 +56,9 @@
     'RedHat': {
         'pkgs_ml2': ['openstack-neutron-ml2', 'python-pycadf'],
         'pkgs': ['openstack-neutron'],
+        'pkgs_ovn': ['openvswitch-ovn', 'python-networking-ovn'],
         'services': ['neutron-server'],
+        'services_ovn': ['ovn-central'],
         'notification': False,
         'dpdk': false,
         'cors': {},

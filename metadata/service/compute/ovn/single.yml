@@ -1,0 +1,17 @@
+applications:
+- neutron
+classes:
+- service.neutron.support
+parameters:
+  _param:
+    ovn_external_bridge: br-floating
+  neutron:
+    compute:
+      enabled: true
+      version: ${_param:neutron_version}
+      local_ip: ${_param:tenant_address}
+      controller_vip: ${_param:cluster_vip_address}
+      external_access: true
+      external_bridge: ${_param:ovn_external_bridge}
+      backend:
+        engine: ovn
