@@ -1,7 +1,7 @@
 {%- if pillar.neutron.gateway is defined %}
-{%- from "neutron/map.jinja" import gateway as neutron with context %}
+{%- from "neutron/map.jinja" import system_cacerts_file, gateway as neutron with context %}
 {%- else %}
-{%- from "neutron/map.jinja" import compute as neutron with context %}
+{%- from "neutron/map.jinja" import system_cacerts_file, compute as neutron with context %}
 {%- endif %}
 [DEFAULT]
 
@@ -590,14 +590,16 @@ rpc_response_timeout=120
 # A URL representing the messaging driver to use and its full configuration.
 # (string value)
 #transport_url = <None>
+
+{%- set rabbit_port = neutron.message_queue.get('port', 5671 if neutron.message_queue.get('ssl',{}).get('enabled', False)  else 5672) %}
 {%- if neutron.message_queue.members is defined %}
 transport_url = rabbit://{% for member in neutron.message_queue.members -%}
-                             {{ neutron.message_queue.user }}:{{ neutron.message_queue.password }}@{{ member.host }}:{{ member.get('port', 5672) }}
+                             {{ neutron.message_queue.user }}:{{ neutron.message_queue.password }}@{{ member.host }}:{{ member.get('port',rabbit_port) }}
                              {%- if not loop.last -%},{%- endif -%}
                          {%- endfor -%}
                              /{{ neutron.message_queue.virtual_host }}
 {%- else %}
-transport_url = rabbit://{{ neutron.message_queue.user }}:{{ neutron.message_queue.password }}@{{ neutron.message_queue.host }}:{{ neutron.message_queue.port }}/{{ neutron.message_queue.virtual_host }}
+transport_url = rabbit://{{ neutron.message_queue.user }}:{{ neutron.message_queue.password }}@{{ neutron.message_queue.host }}:{{ rabbit_port }}/{{ neutron.message_queue.virtual_host }}
 {%- endif %}
 
 # DEPRECATED: The messaging driver to use, defaults to rabbit. Other drivers
@@ -1523,6 +1525,22 @@ driver = messagingv2
 #
 # From oslo.messaging
 #
+
+{%- if neutron.message_queue.get('ssl',{}).get('enabled', False) %}
+rabbit_use_ssl=true
+
+{%- if neutron.message_queue.ssl.version is defined %}
+kombu_ssl_version = {{ neutron.message_queue.ssl.version }}
+{%- elif salt['grains.get']('pythonversion') > [2,7,8] %}
+kombu_ssl_version = TLSv1_2
+{%- endif %}
+
+{%- if neutron.message_queue.ssl.cacert_file is defined %}
+kombu_ssl_ca_certs = {{ neutron.message_queue.ssl.cacert_file }}
+{%- else %}
+kombu_ssl_ca_certs={{ system_cacerts_file }}
+{%- endif %}
+{%- endif %}
 
 # Use durable queues in AMQP. (boolean value)
 # Deprecated group/name - [DEFAULT]/amqp_durable_queues

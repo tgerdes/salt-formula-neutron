@@ -1,4 +1,4 @@
-{% from "neutron/map.jinja" import compute, fwaas with context %}
+{% from "neutron/map.jinja" import compute, fwaas, system_cacerts_file with context %}
 {%- if compute.enabled %}
 
 neutron_compute_packages:
@@ -41,6 +41,9 @@ neutron_sriov_service:
     - file: /etc/neutron/neutron.conf
     - file: /etc/neutron/plugins/ml2/openvswitch_agent.ini
     - file: /etc/neutron/plugins/ml2/sriov_agent.ini
+    {%- if compute.message_queue.get('ssl',{}).get('enabled', False) %}
+    - file: rabbitmq_ca
+    {%- endif %}
 
 {% endif %}
 
@@ -69,6 +72,9 @@ neutron_dvr_agents:
       - file: /etc/neutron/metadata_agent.ini
       {%- if fwaas.get('enabled', False) %}
       - file: /etc/neutron/fwaas_driver.ini
+      {% endif %}
+      {%- if compute.message_queue.get('ssl',{}).get('enabled', False) %}
+      - file: rabbitmq_ca
       {%- endif %}
     - require:
       - pkg: neutron_dvr_packages
@@ -107,5 +113,23 @@ neutron_compute_services:
   - watch:
     - file: /etc/neutron/neutron.conf
     - file: /etc/neutron/plugins/ml2/openvswitch_agent.ini
+    {%- if compute.message_queue.get('ssl',{}).get('enabled', False) %}
+    - file: rabbitmq_ca
+    {%- endif %}
+
+
+{%- if compute.message_queue.get('ssl',{}).get('enabled', False) %}
+rabbitmq_ca:
+{%- if compute.message_queue.ssl.cacert is defined %}
+  file.managed:
+    - name: {{ compute.message_queue.ssl.cacert_file }}
+    - contents_pillar: neutron:compute:message_queue:ssl:cacert
+    - mode: 0444
+    - makedirs: true
+{%- else %}
+  file.exists:
+   - name: {{ compute.message_queue.ssl.get('cacert_file', system_cacerts_file) }}
+{%- endif %}
+{%- endif %}
 
 {%- endif %}

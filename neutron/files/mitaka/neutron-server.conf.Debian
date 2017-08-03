@@ -1,4 +1,5 @@
-{%- from "neutron/map.jinja" import fwaas, server with context %}
+{%- from "neutron/map.jinja" import fwaas, server, system_cacerts_file with context %}
+
 [DEFAULT]
 
 #
@@ -844,7 +845,7 @@ auth_region={{ server.identity.region }}
 auth_protocol=http
 revocation_cache_time = 10
 {% if server.backend.engine == "contrail" %}
-# LBaaS contrail neutron plugin for versions 3.x expects auth_type to be 
+# LBaaS contrail neutron plugin for versions 3.x expects auth_type to be
 # 'keystone' or 'noauth'
 # This behaviour is fixed after the release MCP1.0 by using auth_strategy
 # instead of auth_type, until this is backported to MCP1.0 auth_type must be
@@ -1365,14 +1366,31 @@ driver = messagingv2
 # Deprecated group/name - [DEFAULT]/rabbit_hosts
 #rabbit_hosts = $rabbit_host:$rabbit_port
 #
+{%- set rabbit_port = server.message_queue.get('port', 5671 if server.message_queue.get('ssl',{}).get('enabled', False)  else 5672) %}
 {%- if server.message_queue.members is defined %}
 rabbit_hosts = {% for member in server.message_queue.members -%}
-                   {{ member.host }}:{{ member.get('port', 5672) }}
+                   {{ member.host }}:{{ member.get('port',rabbit_port) }}
                    {%- if not loop.last -%},{%- endif -%}
                {%- endfor -%}
 {%- else %}
 rabbit_host = {{ server.message_queue.host }}
-rabbit_port = {{ server.message_queue.port }}
+rabbit_port = {{ rabbit_port }}
+{%- endif %}
+
+{%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
+rabbit_use_ssl=true
+
+{%- if server.message_queue.ssl.version is defined %}
+kombu_ssl_version = {{ server.message_queue.ssl.version }}
+{%- elif salt['grains.get']('pythonversion') > [2,7,8] %}
+kombu_ssl_version = TLSv1_2
+{%- endif %}
+
+{%- if server.message_queue.ssl.cacert_file is defined %}
+kombu_ssl_ca_certs = {{ server.message_queue.ssl.cacert_file }}
+{%- else %}
+kombu_ssl_ca_certs={{ system_cacerts_file }}
+{%- endif %}
 {%- endif %}
 
 rabbit_userid = {{ server.message_queue.user }}

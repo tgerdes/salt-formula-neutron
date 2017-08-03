@@ -1,11 +1,11 @@
-{%- from "neutron/map.jinja" import server, fwaas with context %}
+{%- from "neutron/map.jinja" import server, fwaas, system_cacerts_file with context %}
+
 {%- if fwaas.get('enabled', False) %}
 include:
 - neutron.fwaas
 {%- endif %}
 
 {%- if server.get('enabled', False) %}
-
 {% if grains.os_family == 'Debian' %}
 # This is here to avoid starting up wrongly configured service and to avoid
 # issue with restart limits on systemd.
@@ -66,6 +66,9 @@ neutron_server_service:
   {%- endif %}
   - watch:
     - file: /etc/neutron/neutron.conf
+    {%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
+    - file: rabbitmq_ca
+    {%- endif %}
 
 {%- endif %}
 
@@ -214,6 +217,9 @@ neutron_server_services:
   {%- endif %}
   - watch:
     - file: /etc/neutron/neutron.conf
+    {%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
+    - file: rabbitmq_ca
+    {%- endif %}
 
 {%- if grains.get('virtual_subtype', None) == "Docker" %}
 
@@ -224,6 +230,21 @@ neutron_entrypoint:
   - source: salt://neutron/files/entrypoint.sh
   - mode: 755
 
+{%- endif %}
+
+
+{%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
+rabbitmq_ca:
+{%- if server.message_queue.ssl.cacert is defined %}
+  file.managed:
+    - name: {{ server.message_queue.ssl.cacert_file }}
+    - contents_pillar: neutron:server:message_queue:ssl:cacert
+    - mode: 0444
+    - makedirs: true
+{%- else %}
+  file.exists:
+   - name: {{ server.message_queue.ssl.get('cacert_file', system_cacerts_file) }}
+{%- endif %}
 {%- endif %}
 
 {%- endif %}
