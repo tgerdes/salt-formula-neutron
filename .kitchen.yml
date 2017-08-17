@@ -63,6 +63,11 @@ suites:
       pillars-from-files:
         neutron.sls: tests/pillar/compute_dvr.sls
 
+  - name: compute_dvr_fwaas_v1
+    provisioner:
+      pillars-from-files:
+        neutron.sls: tests/pillar/compute_dvr_fwaas_v1.sls
+
   - name: compute_legacy
     provisioner:
       pillars-from-files:
@@ -104,10 +109,15 @@ suites:
       pillars-from-files:
         neutron.sls: tests/pillar/control_nodvr.sls
 
-  - name: control_lbaas_octavia.sls
+  - name: control_lbaas_octavia
     provisioner:
       pillars-from-files:
         neutron.sls: tests/pillar/control_lbaas_octavia.sls
+
+  - name: control_fwaas_v1
+    provisioner:
+      pillars-from-files:
+        neutron.sls: tests/pillar/control_fwaas_v1.sls
 
   - name: control_single
     provisioner:
@@ -133,5 +143,10 @@ suites:
     provisioner:
       pillars-from-files:
         neutron.sls: tests/pillar/gateway_qos.sls
+
+  - name: gateway_legacy_fwaas_v1
+    provisioner:
+      pillars-from-files:
+        neutron.sls: tests/pillar/gateway_legacy_fwaas_v1.sls
 
 # vim: ft=yaml sw=2 ts=2 sts=2 tw=125

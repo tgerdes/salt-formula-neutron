@@ -1,4 +1,9 @@
-{% from "neutron/map.jinja" import gateway with context %}
+{% from "neutron/map.jinja" import gateway, fwaas with context %}
+{%- if fwaas.get('enabled', False) %}
+include:
+- neutron.fwaas
+{%- endif %}
+
 {%- if gateway.enabled %}
 
 neutron_gateway_packages:
@@ -54,5 +59,8 @@ neutron_gateway_services:
     - file: /etc/neutron/metadata_agent.ini
     - file: /etc/neutron/plugins/ml2/openvswitch_agent.ini
     - file: /etc/neutron/dhcp_agent.ini
+    {%- if fwaas.get('enabled', False) %}
+    - file: /etc/neutron/fwaas_driver.ini
+    {%- endif %}
 
 {%- endif %}

@@ -65,6 +65,24 @@
     },
 }, merge=pillar.neutron.get('client', {})) %}
 
+{% set fwaas = salt['grains.filter_by']({
+    'default': {
+        'v1': {
+            'driver': 'iptables',
+            'l3_extension': 'fwaas',
+            'service_plugin': 'firewall',
+        },
+        'v2': {
+            'driver': 'iptables_v2',
+            'l3_extension': 'fwaas_v2',
+            'service_plugin': 'firewall_v2',
+        },
+        'pkgs': ['python-neutron-fwaas'],
+        'api_version': 'v1',
+    },
+}, merge=pillar.neutron.get('fwaas', {}), base='default') %}
+
+
 {% set monitoring = salt['grains.filter_by']({
     'default': {
         'error_log_rate': 0.2,

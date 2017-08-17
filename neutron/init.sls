@@ -1,5 +1,8 @@
 
 include:
+{% if pillar.neutron.fwaas is defined %}
+- neutron.fwaas
+{% endif %}
 {% if pillar.neutron.server is defined %}
 - neutron.server
 {% endif %}

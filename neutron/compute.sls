@@ -1,4 +1,4 @@
-{% from "neutron/map.jinja" import compute with context %}
+{% from "neutron/map.jinja" import compute, fwaas with context %}
 {%- if compute.enabled %}
 
 neutron_compute_packages:
@@ -46,6 +46,11 @@ neutron_sriov_service:
 
 {% if compute.dvr %}
 
+{%- if fwaas.get('enabled', False) %}
+include:
+- neutron.fwaas
+{%- endif %}
+
 neutron_dvr_packages:
   pkg.installed:
   - names:
@@ -62,6 +67,9 @@ neutron_dvr_agents:
       - file: /etc/neutron/neutron.conf
       - file: /etc/neutron/l3_agent.ini
       - file: /etc/neutron/metadata_agent.ini
+      {%- if fwaas.get('enabled', False) %}
+      - file: /etc/neutron/fwaas_driver.ini
+      {%- endif %}
     - require:
       - pkg: neutron_dvr_packages
 

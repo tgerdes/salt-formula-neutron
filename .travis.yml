@@ -21,12 +21,17 @@ env:
     - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_dpdk
     - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_dvr
     - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_dvr
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_dvr_fwaas_v1
     - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_legacy
     - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_legacy
     - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_nonexternal_dvr
     - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_nonexternal_dvr
     - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_sriov
     - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_sriov
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_qos_sriov
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_qos_sriov
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_qos
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_qos
     - PLATFORM=trevorj/salty-whales:trusty SUITE=control_cluster
     - PLATFORM=trevorj/salty-whales:xenial SUITE=control_cluster
     - PLATFORM=trevorj/salty-whales:trusty SUITE=control_dvr
@@ -35,10 +40,17 @@ env:
     - PLATFORM=trevorj/salty-whales:xenial SUITE=control_nodvr
     - PLATFORM=trevorj/salty-whales:trusty SUITE=control_single
     - PLATFORM=trevorj/salty-whales:xenial SUITE=control_single
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_lbaas_octavia
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_fwaas_v1
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=control_qos
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_qos
     - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway_dvr
     - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway_dvr
     - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway_legacy
     - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway_legacy
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway_qos
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway_qos
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway_legacy_fwaas_v1
 
 before_script:
   - set -o pipefail

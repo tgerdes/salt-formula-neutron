@@ -108,7 +108,21 @@ automatically. In this case lbaas should disabled in pillar:
       lbaas:
         enabled: false
 
+
+Neutron FWaaSv1 enablement
+--------------------------
+
+.. code-block:: yaml
+
+  neutron:
+    fwaas:
+      enabled: true
+      version: ocata
+      api_version: v1
+
+
 Enable CORS parameters
+----------------------
 
 .. code-block:: yaml
 

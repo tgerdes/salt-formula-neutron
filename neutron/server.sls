@@ -1,4 +1,9 @@
-{%- from "neutron/map.jinja" import server with context %}
+{%- from "neutron/map.jinja" import server, fwaas with context %}
+{%- if fwaas.get('enabled', False) %}
+include:
+- neutron.fwaas
+{%- endif %}
+
 {%- if server.get('enabled', False) %}
 
 {% if grains.os_family == 'Debian' %}
