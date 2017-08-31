@@ -1,4 +1,4 @@
-{%- from "neutron/map.jinja" import server with context %}
+{%- from "neutron/map.jinja" import fwaas, server with context %}
 [DEFAULT]
 
 #
@@ -37,9 +37,9 @@ service_plugins = neutron_plugin_contrail.plugins.opencontrail.loadbalancer.v2.p
 
 core_plugin = neutron.plugins.ml2.plugin.Ml2Plugin
 
-service_plugins =neutron.services.l3_router.l3_router_plugin.L3RouterPlugin,neutron.services.metering.metering_plugin.MeteringPlugin{%- if server.lbaas is defined -%}
-,neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2
-{%- endif -%}
+service_plugins =neutron.services.l3_router.l3_router_plugin.L3RouterPlugin,neutron.services.metering.metering_plugin.MeteringPlugin
+{%- if server.lbaas is defined -%},neutron_lbaas.services.loadbalancer.plugin.LoadBalancerPluginv2{%- endif -%}
+{%- if fwaas.get('enabled', False) -%},{{ fwaas[fwaas.api_version]['service_plugin'] }}{%- endif -%}
 
 {% endif %}
 
