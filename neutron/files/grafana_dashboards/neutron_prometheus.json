@@ -641,7 +641,7 @@
           "tableColumn": "",
           "targets": [
             {
-              "expr": "openstack_neutron_ports{owner=~\"compute:.*\",state=\"active\"}",
+              "expr": "sum(openstack_neutron_ports{owner=~\"compute:.*\",state=\"active\"})",
               "format": "time_series",
               "intervalFactor": 2,
               "refId": "A",
