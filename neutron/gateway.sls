@@ -1,11 +1,11 @@
-{% from "neutron/map.jinja" import gateway, fwaas with context %}
+{% from "neutron/map.jinja" import gateway, fwaas, system_cacerts_file with context %}
+
 {%- if fwaas.get('enabled', False) %}
 include:
 - neutron.fwaas
 {%- endif %}
 
 {%- if gateway.enabled %}
-
 neutron_gateway_packages:
   pkg.installed:
   - names: {{ gateway.pkgs }}
@@ -62,5 +62,23 @@ neutron_gateway_services:
     {%- if fwaas.get('enabled', False) %}
     - file: /etc/neutron/fwaas_driver.ini
     {%- endif %}
+    {%- if gateway.message_queue.get('ssl',{}).get('enabled', False) %}
+    - file: rabbitmq_ca
+    {%- endif %}
+
+
+{%- if gateway.message_queue.get('ssl',{}).get('enabled', False) %}
+rabbitmq_ca:
+{%- if gateway.message_queue.ssl.cacert is defined %}
+  file.managed:
+    - name: {{ gateway.message_queue.ssl.cacert_file }}
+    - contents_pillar: neutron:gateway:message_queue:ssl:cacert
+    - mode: 0444
+    - makedirs: true
+{%- else %}
+  file.exists:
+   - name: {{ gateway.message_queue.ssl.get('cacert_file', system_cacerts_file) }}
+{%- endif %}
+{%- endif %}
 
 {%- endif %}
