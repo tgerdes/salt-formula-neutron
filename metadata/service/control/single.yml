@@ -48,3 +48,12 @@ parameters:
         user: nova
         password: ${_param:keystone_nova_password}
         tenant: service
+      backend:
+        extension:
+          dns:
+            enabled: False
+            engine: designate
+            protocol: http
+            host: ${_param:single_address}
+            port: 9001
+            url: ${neutron:server:backend:extension:dns:protocol}://${neutron:server:backend:extension:dns:host}:${neutron:server:backend:extension:dns:port}/v2

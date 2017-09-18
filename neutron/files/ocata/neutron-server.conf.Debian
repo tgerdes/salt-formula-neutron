@@ -118,6 +118,9 @@ dns_domain = {{ server.dns_domain }}
 
 # Driver for external DNS integration. (string value)
 #external_dns_driver = <None>
+{%- if server.backend.get('extension', {}).get('dns', {}).get('enabled', False) %}
+external_dns_driver={{ server.backend.get('extension', {}).get('dns', {}).get('engine', '') }}
+{%- endif %}
 
 # Allow sending resource operation notification to DHCP agent (boolean value)
 #dhcp_agent_notification = true
@@ -2224,3 +2227,20 @@ service_provider = LOADBALANCERV2:Opencontrail:neutron_plugin_contrail.plugins.o
 {% include "neutron/files/"+server.version+"/ContrailPlugin.ini" %}
 
 {% endif %}
+
+{%- if server.backend.get('extension', {}).get('dns', {}).get('enabled', False) and server.backend.get('extension', {}).get('dns', {}).get('engine', '') == 'designate' %}
+[designate]
+{%- if server.backend.get('extension', {}).get('dns', {}).get('url', False) %}
+url = {{ server.backend.extension.dns.url }}
+{%- else %}
+#url = <None>
+{%- endif %}
+auth_region={{ server.identity.region }}
+auth_type = password
+user_domain_id = {{ server.identity.get('domain', 'default') }}
+project_domain_id = {{ server.identity.get('domain', 'default') }}
+project_name = {{ server.identity.tenant }}
+username = {{ server.identity.user }}
+password = {{ server.identity.password }}
+auth_url=http://{{ server.identity.host }}:35357
+{%- endif %}
