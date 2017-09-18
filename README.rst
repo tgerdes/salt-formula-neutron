@@ -898,6 +898,19 @@ Floating IP addresses
           Instance port in the stated subnet will be associated with the dynamically generated floating IP.
 
 
+
+Enable Neutron extensions (QoS, DNS, etc.)
+------------------------------------------
+.. code-block:: yaml
+
+    neutron:
+      server:
+        backend:
+          extension:
+            - dns
+            - qos
+
+
 Documentation and Bugs
 ======================
 
