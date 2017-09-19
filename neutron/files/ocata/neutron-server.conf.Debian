@@ -848,8 +848,9 @@ allow_headers = {{ server.cors.allow_headers }}
 # Deprecated group/name - [DEFAULT]/sql_connection
 # Deprecated group/name - [DATABASE]/sql_connection
 # Deprecated group/name - [sql]/connection
+
 {% if server.backend.engine in ["ml2", "ovn"] %}
-connection = {{ server.database.engine }}+pymysql://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}?charset=utf8
+connection = {{ server.database.engine }}+pymysql://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}?charset=utf8{%- if server.database.get('ssl',{}).get('enabled',False) %}&ssl_ca={{ server.database.ssl.get('cacert_file', system_cacerts_file) }}{% endif %}
 {% else %}
 connection = sqlite:////var/lib/neutron/neutron.sqlite
 {% endif %}

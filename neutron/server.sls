@@ -69,6 +69,9 @@ neutron_server_service:
     {%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
     - file: rabbitmq_ca_neutron_server
     {%- endif %}
+    {%- if server.database.get('ssl',{}).get('enabled', False) %}
+    - file: mysql_ca_neutron_server
+    {%- endif %}
 
 {%- endif %}
 
@@ -109,6 +112,9 @@ neutron_db_manage:
   - template: jinja
   - require:
     - pkg: neutron_server_packages
+    {%- if server.database.get('ssl',{}).get('enabled', False) %}
+    - file: mysql_ca_neutron_server
+    {%- endif %}
 
 /etc/neutron/api-paste.ini:
   file.managed:
@@ -257,6 +263,9 @@ neutron_server_services:
     {%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
     - file: rabbitmq_ca_neutron_server
     {%- endif %}
+    {%- if server.database.get('ssl',{}).get('enabled', False) %}
+    - file: mysql_ca_neutron_server
+    {%- endif %}
 
 {%- if grains.get('virtual_subtype', None) == "Docker" %}
 
@@ -281,6 +290,20 @@ rabbitmq_ca_neutron_server:
 {%- else %}
   file.exists:
    - name: {{ server.message_queue.ssl.get('cacert_file', system_cacerts_file) }}
+{%- endif %}
+{%- endif %}
+
+{%- if server.database.get('ssl',{}).get('enabled', False) %}
+mysql_ca_neutron_server:
+{%- if server.database.ssl.cacert is defined %}
+  file.managed:
+    - name: {{ server.database.ssl.cacert_file }}
+    - contents_pillar: neutron:server:database:ssl:cacert
+    - mode: 0444
+    - makedirs: true
+{%- else %}
+  file.exists:
+   - name: {{ server.database.ssl.get('cacert_file', system_cacerts_file) }}
 {%- endif %}
 {%- endif %}
 
