@@ -15,6 +15,17 @@ server:
         summary: "Endpoint check for '{{ $labels.service }}' is down"
         description: >-
             Endpoint check for '{{ $labels.service }}' is down for 2 minutes
+    NeutronAPIServiceDown:
+      if: >-
+        http_response_status{service=~"neutron-api"} == 0
+      for: 2m
+      labels:
+        severity: down
+        service: "{{ $labels.service }}"
+      annotations:
+        summary: "HTTP check for '{{ $labels.service }}' down"
+        description: >-
+            The HTTP check for '{{ $labels.service }}' is down on {{ $labels.host }} for 2 minutes.
 {%- endraw %}
 {%- if server.get('backend', {}).engine is defined and server.backend.engine == "ml2" %}
 {%- raw %}
