@@ -80,6 +80,8 @@ neutron_server_service:
   - template: jinja
   - require:
     - pkg: neutron_server_packages
+  - watch_in:
+    - service: neutron_server_services
 
 ml2_plugin_link:
   cmd.run:
