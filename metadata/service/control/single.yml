@@ -8,7 +8,6 @@ parameters:
   neutron:
     server:
       enabled: true
-      plugin: ml2
       fwaas: false
       dns_domain: novalocal
       tunnel_type: vxlan
