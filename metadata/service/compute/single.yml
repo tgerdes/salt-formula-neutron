@@ -26,6 +26,3 @@ parameters:
       backend:
         engine: ml2
         tenant_network_types: "flat,vxlan"
-        mechanism:
-          ovs:
-            driver: openvswitch

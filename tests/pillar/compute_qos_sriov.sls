@@ -9,8 +9,8 @@ neutron:
           devname: eth1
           physical_network: physnet3
       mechanism:
-        ovs:
-          driver: openvswitch
+        - openvswitch
+        - l2population
     dvr: false
     enabled: true
     qos: true

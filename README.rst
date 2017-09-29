@@ -190,8 +190,8 @@ Neutron Server
           tenant_network_types: "flat,vxlan"
           external_mtu: 9000
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
 
 Network Node
 
@@ -218,8 +218,8 @@ Network Node
           engine: ml2
           tenant_network_types: "flat,vxlan"
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
 
 Compute Node
 
@@ -247,8 +247,8 @@ Compute Node
           engine: ml2
           tenant_network_types: "flat,vxlan"
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
         audit:
           enabled: false
 
@@ -299,8 +299,8 @@ Neutron Server
           tenant_network_types= "flat,vxlan"
           external_mtu: 9000
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
 
 Network Node
 
@@ -328,8 +328,8 @@ Network Node
           engine: ml2
           tenant_network_types: "flat,vxlan"
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
 
 Compute Node
 
@@ -353,8 +353,8 @@ Compute Node
           engine: ml2
           tenant_network_types: "flat,vxlan"
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
 
 Neutron VXLAN tenant networks with Network Nodes with DVR
 ---------------------------------------------------------
@@ -405,8 +405,8 @@ Neutron Server
           tenant_network_types= "flat,vxlan"
           external_mtu: 9000
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
 
 Network Node
 
@@ -434,8 +434,8 @@ Network Node
           engine: ml2
           tenant_network_types: "flat,vxlan"
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
 
 Compute Node
 
@@ -464,8 +464,8 @@ Compute Node
           engine: ml2
           tenant_network_types: "flat,vxlan"
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
 
 Sample Linux network configuration for DVR
 
@@ -569,8 +569,8 @@ Neutron Server only
           external_vlan_range: "100:200" # Does not have to be defined.
           external_mtu: 9000
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
 
 Compute node
 
@@ -587,8 +587,8 @@ Compute node
           engine: ml2
           tenant_network_types: "flat,vlan" # Can be mixed flat,vlan,vxlan
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
 
 Advanced Neutron Features (DPDK, SR-IOV)
 
@@ -613,8 +613,8 @@ Enable datapath netdev for neutron openvswitch agent
           engine: ml2
           ...
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
 
 Neutron OVS SR-IOV
 
@@ -627,10 +627,9 @@ Neutron OVS SR-IOV
           engine: ml2
           ...
           mechanism:
-            ovs:
-              driver: openvswitch
-            sriov:
-              driver: sriovnicswitch
+            - openvswitch
+            - sriovnicswitch
+            - l2population
 
     neutron:
       compute:
@@ -644,8 +643,8 @@ Neutron OVS SR-IOV
               devname: eth1
               physical_network: physnet3
           mechanism:
-            ovs:
-              driver: openvswitch
+            - openvswitch
+            - l2population
 
 Neutron with VLAN-aware-VMs
 

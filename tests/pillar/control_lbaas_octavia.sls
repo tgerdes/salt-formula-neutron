@@ -4,8 +4,8 @@ neutron:
       engine: ml2
       external_mtu: 1500
       mechanism:
-        ovs:
-          driver: openvswitch
+        - openvswitch
+        - l2population
       tenant_network_types: flat,vxlan
     bind:
       address: 172.16.10.101
