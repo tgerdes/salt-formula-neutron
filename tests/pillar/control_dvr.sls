@@ -44,7 +44,6 @@ neutron:
       port: 5672
       user: openstack
       virtual_host: /openstack
-    plugin: ml2
     version: mitaka
     policy:
       create_subnet: 'rule:admin_or_network_owner'

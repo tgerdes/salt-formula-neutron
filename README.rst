@@ -157,7 +157,6 @@ Neutron Server
     neutron:
       server:
         version: mitaka
-        plugin: ml2
         bind:
           address: 172.20.0.1
           port: 9696
@@ -267,7 +266,6 @@ Neutron Server
     neutron:
       server:
         version: mitaka
-        plugin: ml2
         bind:
           address: 172.20.0.1
           port: 9696
@@ -374,7 +372,6 @@ Neutron Server
     neutron:
       server:
         version: mitaka
-        plugin: ml2
         bind:
           address: 172.20.0.1
           port: 9696
@@ -561,7 +558,6 @@ Neutron Server only
     neutron:
       server:
         version: mitaka
-        plugin: ml2
         ...
         global_physnet_mtu: 9000
         l3_ha: False
@@ -583,7 +579,6 @@ Compute node
     neutron:
       compute:
         version: mitaka
-        plugin: ml2
         ...
         dvr: True
         agent_mode: dvr
@@ -613,7 +608,6 @@ Enable datapath netdev for neutron openvswitch agent
     neutron:
       compute:
         version: mitaka
-        plugin: ml2
         dpdk: True
         backend:
           engine: ml2
@@ -629,7 +623,6 @@ Neutron OVS SR-IOV
     neutron:
       server:
         version: mitaka
-        plugin: ml2
         backend:
           engine: ml2
           ...
@@ -642,7 +635,6 @@ Neutron OVS SR-IOV
     neutron:
       compute:
         version: mitaka
-        plugin: ml2
         ...
         backend:
           engine: ml2
@@ -678,7 +670,6 @@ Neutron Server with OpenContrail
 
     neutron:
       server:
-        plugin: contrail
         backend:
           engine: contrail
           host: contrail_discovery_host

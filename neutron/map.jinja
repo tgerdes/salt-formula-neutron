@@ -92,22 +92,3 @@
         'error_log_rate': 0.2,
     },
 }, grain='os_family', merge=salt['pillar.get']('neutron:monitoring')) %}
-
-{%- if pillar.neutron.server is defined %}
-
-{%- set tmp_server = pillar.neutron.server %}
-
-{%- if not tmp_server.backend is defined %}
-
-{%- if pillar.opencontrail is defined and tmp_server.plugin == "contrail" %}
-
-{%- from "opencontrail/map.jinja" import config with context %}
-
-{%- set backend = {'engine': tmp_server.plugin, 'host': config.discovery.host, 'token': config.identity.token, 'user': config.identity.user, 'password': config.identity.password, 'tenant': config.identity.tenant} %}
-{%- set tmp = server.update({'backend': backend}) %}
-
-{%- endif %}
-
-{%- endif %}
-
-{%- endif %}
