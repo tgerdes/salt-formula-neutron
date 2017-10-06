@@ -7,9 +7,11 @@ neutron:
       mechanism:
         ovs:
           driver: openvswitch
+      extension:
+        qos:
+          enabled: true
     dvr: false
     enabled: true
-    qos: true
     external_access: false
     local_ip: 10.1.0.105
     message_queue:

@@ -7,6 +7,9 @@ neutron:
         ovs:
           driver: openvswitch
       tenant_network_types: flat,vxlan
+      extension:
+        qos:
+          enabled: true
     bind:
       address: 172.16.10.101
       port: 9696
@@ -26,7 +29,6 @@ neutron:
     dns_domain: novalocal
     dvr: false
     enabled: true
-    qos: true
     global_physnet_mtu: 1500
     identity:
       engine: keystone
