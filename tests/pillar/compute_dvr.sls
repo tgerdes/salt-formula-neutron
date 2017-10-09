@@ -5,8 +5,8 @@ neutron:
       engine: ml2
       tenant_network_types: "flat,vxlan"
       mechanism:
-        - openvswitch
-        - l2population
+        ovs:
+          driver: openvswitch
     dvr: true
     enabled: true
     external_access: true
