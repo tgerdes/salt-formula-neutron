@@ -67,7 +67,7 @@ neutron_server_service:
   - watch:
     - file: /etc/neutron/neutron.conf
     {%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
-    - file: rabbitmq_ca
+    - file: rabbitmq_ca_neutron_server
     {%- endif %}
 
 {%- endif %}
@@ -220,7 +220,7 @@ neutron_server_services:
   - watch:
     - file: /etc/neutron/neutron.conf
     {%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
-    - file: rabbitmq_ca
+    - file: rabbitmq_ca_neutron_server
     {%- endif %}
 
 {%- if grains.get('virtual_subtype', None) == "Docker" %}
@@ -236,7 +236,7 @@ neutron_entrypoint:
 
 
 {%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
-rabbitmq_ca:
+rabbitmq_ca_neutron_server:
 {%- if server.message_queue.ssl.cacert is defined %}
   file.managed:
     - name: {{ server.message_queue.ssl.cacert_file }}

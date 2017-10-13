@@ -42,7 +42,7 @@ neutron_sriov_service:
     - file: /etc/neutron/plugins/ml2/openvswitch_agent.ini
     - file: /etc/neutron/plugins/ml2/sriov_agent.ini
     {%- if compute.message_queue.get('ssl',{}).get('enabled', False) %}
-    - file: rabbitmq_ca
+    - file: rabbitmq_ca_neutron_compute
     {%- endif %}
 
 {% endif %}
@@ -74,7 +74,7 @@ neutron_dvr_agents:
       - file: /etc/neutron/fwaas_driver.ini
       {% endif %}
       {%- if compute.message_queue.get('ssl',{}).get('enabled', False) %}
-      - file: rabbitmq_ca
+      - file: rabbitmq_ca_neutron_compute
       {%- endif %}
     - require:
       - pkg: neutron_dvr_packages
@@ -114,12 +114,12 @@ neutron_compute_services:
     - file: /etc/neutron/neutron.conf
     - file: /etc/neutron/plugins/ml2/openvswitch_agent.ini
     {%- if compute.message_queue.get('ssl',{}).get('enabled', False) %}
-    - file: rabbitmq_ca
+    - file: rabbitmq_ca_neutron_compute
     {%- endif %}
 
 
 {%- if compute.message_queue.get('ssl',{}).get('enabled', False) %}
-rabbitmq_ca:
+rabbitmq_ca_neutron_compute:
 {%- if compute.message_queue.ssl.cacert is defined %}
   file.managed:
     - name: {{ compute.message_queue.ssl.cacert_file }}

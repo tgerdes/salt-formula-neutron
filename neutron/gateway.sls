@@ -63,12 +63,12 @@ neutron_gateway_services:
     - file: /etc/neutron/fwaas_driver.ini
     {%- endif %}
     {%- if gateway.message_queue.get('ssl',{}).get('enabled', False) %}
-    - file: rabbitmq_ca
+    - file: rabbitmq_ca_neutron_gateway
     {%- endif %}
 
 
 {%- if gateway.message_queue.get('ssl',{}).get('enabled', False) %}
-rabbitmq_ca:
+rabbitmq_ca_neutron_gateway:
 {%- if gateway.message_queue.ssl.cacert is defined %}
   file.managed:
     - name: {{ gateway.message_queue.ssl.cacert_file }}
