@@ -61,7 +61,7 @@ dashboard:
                 alias: "Fatal"
                 rawQuery: true
                 query: SELECT count(max) FROM openstack_neutron_http_response_times WHERE environment_label = '$environment' AND http_status = '5xx' AND $timeFilter
-  main:
+  main_influxdb:
     datasource: influxdb
     row:
       ost-control-plane:
@@ -77,6 +77,21 @@ dashboard:
               cluster_status:
                 rawQuery: true
                 query: SELECT last(value) FROM cluster_status WHERE cluster_name = 'neutron-control' AND environment_label = '$environment' AND $timeFilter GROUP BY time($interval) fill(null)
+  main_prometheus:
+    datasource: prometheus
+    row:
+      ost-control-plane:
+        title: OpenStack Control Plane
+        panel:
+          neutron:
+            title: Neutron
+            links:
+            - dashboard: Neutron
+              title: Neutron
+              type: dashboard
+            target:
+              cluster_status:
+                expr: avg(openstack_api_check_status{service=~"neutron.*"})
 {%- if pillar.neutron.get('server', {}).get('backend', {}).engine is defined and pillar.neutron.server.backend.engine == "ml2" %}
       ost-data-plane:
         title: OpenStack Data Plane
