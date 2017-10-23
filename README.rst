@@ -253,6 +253,40 @@ Compute Node
           enabled: false
 
 
+Disable physnet1 bridge
+-----------------------
+
+By default we have external access turned on, so among any physnets in
+your reclass there would be additional one: physnet1, which is mapped to
+br-floating
+
+If you need internal nets only without this bridge, remove br-floating
+and configurations mappings. Disable mappings for this bridge on
+neutron-servers:
+
+.. code-block:: yaml
+
+    neutron:
+      server:
+        external_access: false
+
+gateways:
+
+.. code-block:: yaml
+
+    neutron:
+      gateway:
+        external_access: false
+
+compute nodes:
+
+.. code-block:: yaml
+
+    neutron:
+      compute:
+        external_access: false
+
+
 Neutron VXLAN tenant networks with Network Nodes (non DVR)
 ----------------------------------------------------------
 
