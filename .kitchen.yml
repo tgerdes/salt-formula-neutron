@@ -93,7 +93,6 @@ suites:
       pillars-from-files:
         neutron.sls: tests/pillar/compute_qos.sls
 
-
   - name: control_cluster
     provisioner:
       pillars-from-files:

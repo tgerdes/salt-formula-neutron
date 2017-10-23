@@ -953,8 +953,14 @@ Enable Neutron extensions (QoS, DNS, etc.)
       server:
         backend:
           extension:
-            - dns
-            - qos
+            dns:
+              enabled: True
+              host: 127.0.0.1
+              port: 9001
+              protocol: http
+              ....
+            qos
+              enabled: True
 
 
 Documentation and Bugs
