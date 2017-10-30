@@ -1026,6 +1026,23 @@ Enable Neutron extensions (QoS, DNS, etc.)
               enabled: True
 
 
+
+Neutron with Designate
+-----------------------------------------
+.. code-block:: yaml
+
+    neutron:
+      server:
+        backend:
+          extension:
+            dns:
+              enabled: True
+              host: 127.0.0.1
+              port: 9001
+              protocol: http
+
+
+
 Documentation and Bugs
 ======================
 

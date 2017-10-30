@@ -46,6 +46,8 @@ env:
     - PLATFORM=trevorj/salty-whales:trusty SUITE=control_qos
     - PLATFORM=trevorj/salty-whales:xenial SUITE=control_qos
     - PLATFORM=trevorj/salty-whales:xenial SUITE=control_ovn
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=control_dns
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_dns
     - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway_dvr
     - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway_dvr
     - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway_legacy

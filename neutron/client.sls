@@ -58,6 +58,9 @@ neutron_openstack_network_{{ network_name }}:
     {%- if network.provider_segmentation_id is defined %}
     - provider_segmentation_id: {{ network.provider_segmentation_id }}
     {%- endif %}
+    {%- if network.dns_domain is defined %}
+    - dns_domain: {{ network.dns_domain }}
+    {%- endif %}
 
 {%- if network.subnet is defined %}
 
