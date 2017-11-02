@@ -301,16 +301,17 @@ def router_present(name=None,
         if created_router:
             router_id = created_router[name]['id']
             network = _neutron_module_call(
-                'list_networks', name=gateway_network, **connection_args)
-            gateway_network_id = network[gateway_network]['id']
+                'list_networks', name=gateway_network, **connection_args)["networks"]
+            #TODO test for more networks
+            gateway_network_id = network[0]['id']
             _neutron_module_call('router_gateway_set',
                                  router_id=router_id,
                                  external_gateway=gateway_network_id,
                                  **connection_args)
             for interface in interfaces:
                 subnet = _neutron_module_call(
-                    'list_subnets', name=interface, **connection_args)
-                subnet_id = subnet[interface]['id']
+                    'list_subnets', name=interface, **connection_args)["subnets"]
+                subnet_id = subnet[0]['id']
                 _neutron_module_call('router_add_interface',
                                      router_id=router_id,
                                      subnet_id=subnet_id,
@@ -329,8 +330,8 @@ def router_present(name=None,
         diff.update({'admin_state_up': admin_state_up})
     if gateway_network:
         network = _neutron_module_call(
-            'list_networks', name=gateway_network, **connection_args)
-        gateway_network_id = network[gateway_network]['id']
+            'list_networks', name=gateway_network, **connection_args)["networks"]
+        gateway_network_id = network[0]['id']
         if not existing_router['external_gateway_info'] and not existing_router['external_gateway_info'] == None:
             if existing_router['external_gateway_info']['network_id'] != gateway_network_id:
                 diff.update({'external_gateway_info': {'network_id': gateway_network_id}})
@@ -368,8 +369,8 @@ def floatingip_present(name=None,
     subnet_name = subnet
     connection_args = _auth(profile, endpoint_type)
     existing_subnet = _neutron_module_call(
-        'list_subnets', name=subnet_name, **connection_args)
-    subnet_id = existing_subnet[subnet_name]['id']
+        'list_subnets', name=subnet_name, **connection_args)["subnets"]
+    subnet_id = existing_subnet[0]['id']
 
     ret = {}
     existing_ports = _neutron_module_call(
@@ -377,11 +378,11 @@ def floatingip_present(name=None,
     existing_floatingips = _neutron_module_call(
         'list_floatingips', **connection_args)
 
-    tenant = __salt__['keystone.tenant_get'](name=tenant_name, profile=profile, **connection_args)
+    tenant = __salt__['keystone.tenant_get'](name=tenant_name, **connection_args)
     tenant_id = tenant[tenant_name]['id']
     existing_network = _neutron_module_call(
-            'list_networks', name=network, **connection_args)
-    floating_network_id = existing_network[network]['id']
+            'list_networks', name=network, **connection_args)["networks"]
+    floating_network_id = existing_network[0]['id']
 
     for key, value in existing_ports.iteritems():
         try:
