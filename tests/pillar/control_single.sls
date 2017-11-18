@@ -2,6 +2,9 @@ neutron:
   server:
     enabled: true
     backend:
+      external_mtu: 1500
+      tenant_net_mtu: 9000
+      ironic_net_mtu: 9000
       engine: contrail
       #contrail_discovery_host
       host: 127.0.0.1

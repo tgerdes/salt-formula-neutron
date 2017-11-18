@@ -287,6 +287,21 @@ compute nodes:
         external_access: false
 
 
+Specify different mtu values for different physnets
+---------------------------------------------------
+
+Neutron Server
+
+.. code-block:: yaml
+
+    neutron:
+      server:
+        version: mitaka
+        backend:
+          external_mtu: 1500
+          tenant_net_mtu: 9000
+          ironic_net_mtu: 9000
+
 Neutron VXLAN tenant networks with Network Nodes (non DVR)
 ----------------------------------------------------------
 
