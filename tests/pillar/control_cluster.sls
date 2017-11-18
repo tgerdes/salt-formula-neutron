@@ -2,6 +2,7 @@ neutron:
   server:
     enabled: true
     fwaas: false
+    path_mtu: 1500
     dns_domain: novalocal
     tunnel_type: vxlan
     version: liberty

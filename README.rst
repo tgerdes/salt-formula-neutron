@@ -157,6 +157,7 @@ Neutron Server
     neutron:
       server:
         version: mitaka
+        path_mtu: 1500
         bind:
           address: 172.20.0.1
           port: 9696
