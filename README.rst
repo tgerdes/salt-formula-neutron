@@ -811,59 +811,51 @@ Client-side RabbitMQ HA setup
           virtual_host: '/openstack'
         ....
 
-Client-side RabbitMQ TLS configuration:
 
-|
-
-To enable TLS for oslo.messaging you need to provide the CA certificate.
-
-By default system-wide CA certs are used. Nothing should be specified except `ssl.enabled`.
-
-.. code-block:: yaml
-
-  neutron:
-    server, gateway, compute:
-      ....
-      message_queue:
-        ssl:
-          enabled: True
+Configuring TLS communications
+------------------------------
 
 
+**Note:** by default system wide installed CA certs are used, so ``cacert_file`` param is optional, as well as ``cacert``.
 
-Use `cacert_file` option to specify the CA-cert file path explicitly:
+
+- **RabbitMQ TLS**
 
 .. code-block:: yaml
 
-  neutron:
-    server, gateway, compute:
-      ....
+ neutron:
+   server, gateway, compute:
       message_queue:
+        port: 5671
         ssl:
           enabled: True
-          cacert_file: /etc/ssl/rabbitmq-ca.pem
+          (optional) cacert: cert body if the cacert_file does not exists
+          (optional) cacert_file: /etc/openstack/rabbitmq-ca.pem
+          (optional) version: TLSv1_2
 
-To manage content of the `cacert_file` use the `cacert` option:
+
+- **MySQL TLS**
 
 .. code-block:: yaml
 
-  neutron:
-    server, gateway, compute:
-      ....
-      message_queue:
+ neutron:
+   server:
+      database:
         ssl:
           enabled: True
-          cacert: |
+          (optional) cacert: cert body if the cacert_file does not exists
+          (optional) cacert_file: /etc/openstack/mysql-ca.pem
 
-          -----BEGIN CERTIFICATE-----
-                    ...
-          -----END CERTIFICATE-------
-
-          cacert_file: /etc/openstack/rabbitmq-ca.pem
+- **Openstack HTTPS API**
 
 
-Notice:
- * The `message_queue.port` is set to **5671** (AMQPS) by default if `ssl.enabled=True`.
- * Use `message_queue.ssl.version` if you need to specify protocol version. By default is TLSv1 for python < 2.7.9 and TLSv1_2 for version above.
+.. code-block:: yaml
+
+ neutron:
+   server:
+      identity:
+         protocol: https
+         (optional) cacert_file: /etc/openstack/proxy.pem
 
 
 Enable auditing filter, ie: CADF
