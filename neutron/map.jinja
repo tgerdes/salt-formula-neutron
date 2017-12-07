@@ -15,7 +15,15 @@
         'dpdk': false,
         'audit': {
           'enabled': false
-        }
+        },
+        'logging': {
+          'log_appender': false,
+          'log_handlers': {
+            'watchedfile': {
+              'enabled': true
+            }
+          },
+        },
     },
     'RedHat': {
         'pkgs': ['openstack-neutron-openvswitch', 'openvswitch', 'python-pycadf'],
@@ -25,7 +33,15 @@
         'dpdk': false,
         'audit': {
           'enabled': false
-        }
+        },
+        'logging': {
+          'log_appender': false,
+          'log_handlers': {
+            'watchedfile': {
+              'enabled': true
+            }
+          },
+        },
     },
 }, merge=pillar.neutron.get('compute', {}), base='BaseDefaults') %}
 
@@ -34,12 +50,28 @@
     'Debian': {
         'pkgs': ['neutron-dhcp-agent', 'neutron-openvswitch-agent', 'neutron-l3-agent', 'openvswitch-common', 'neutron-metadata-agent'],
         'services': ['neutron-openvswitch-agent', 'neutron-metadata-agent', 'neutron-l3-agent', 'neutron-dhcp-agent'],
-        'dpdk': false
+        'dpdk': false,
+        'logging': {
+          'log_appender': false,
+          'log_handlers': {
+            'watchedfile': {
+              'enabled': true
+            }
+          },
+        },
     },
     'RedHat': {
         'pkgs': ['openstack-neutron-openvswitch'],
         'services': ['neutron-openvswitch-agent', 'neutron-metadata-agent', 'neutron-l3-agent', 'neutron-dhcp-agent'],
-        'dpdk': false
+        'dpdk': false,
+        'logging': {
+          'log_appender': false,
+          'log_handlers': {
+            'watchedfile': {
+              'enabled': true
+            }
+          },
+        },
     },
 }, merge=pillar.neutron.get('gateway', {}), base='BaseDefaults') %}
 
@@ -56,7 +88,15 @@
         'cors': {},
         'audit': {
           'enabled': false
-        }
+        },
+        'logging': {
+          'log_appender': false,
+          'log_handlers': {
+            'watchedfile': {
+              'enabled': true
+            }
+          },
+        },
     },
     'RedHat': {
         'pkgs_ml2': ['openstack-neutron-ml2', 'python-pycadf'],
@@ -69,7 +109,15 @@
         'cors': {},
         'audit': {
           'enabled': false
-        }
+        },
+        'logging': {
+          'log_appender': false,
+          'log_handlers': {
+            'watchedfile': {
+              'enabled': true
+            }
+          },
+        },
     },
 }, merge=pillar.neutron.get('server', {}), base='BaseDefaults') %}
 

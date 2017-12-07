@@ -123,6 +123,54 @@ neutron_db_manage:
     - require:
       - pkg: neutron_server_packages
 
+{%- for service_name in server.get('services', []) %}
+{%- if service_name != 'neutron-server' %}
+{{ service_name }}_default:
+  file.managed:
+    - name: /etc/default/{{ service_name }}
+    - source: salt://neutron/files/default
+    - template: jinja
+    - defaults:
+        service_name: {{ service_name }}
+        values: {{ server }}
+    - require:
+      - pkg: neutron_server_packages
+    - watch_in:
+      - service: neutron_server_services
+{%- endif %}
+{%- endfor %}
+
+{%- if server.logging.log_appender %}
+
+{%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+neutron_server_fluentd_logger_package:
+  pkg.installed:
+    - name: python-fluent-logger
+{%- endif %}
+
+{%- for service_name in server.services %}
+{{ service_name }}_logging_conf:
+  file.managed:
+    - name: /etc/neutron/logging/logging-{{ service_name }}.conf
+    - source: salt://neutron/files/logging.conf
+    - template: jinja
+    - makedirs: True
+    - defaults:
+        service_name: {{ service_name }}
+        values: {{ server }}
+    - user: neutron
+    - group: neutron
+    - require:
+      - pkg: neutron_server_packages
+{%- if server.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+      - pkg: neutron_server_fluentd_logger_package
+{%- endif %}
+    - watch_in:
+      - service: neutron_server_services
+{%- endfor %}
+
+{%- endif %}
+
 {%- for name, rule in server.get('policy', {}).iteritems() %}
 
 {%- if rule != None %}
