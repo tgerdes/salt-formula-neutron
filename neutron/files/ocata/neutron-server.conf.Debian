@@ -187,15 +187,27 @@ global_physnet_mtu = {{ server.get('global_physnet_mtu', '1500') }}
 # default is equal to the number of CPUs available for best performance.
 # (integer value)
 #api_workers = <None>
+{%- if server.api_workers is defined %}
+api_workers = {{ server.api_workers }}
+{%- endif %}
 
 # Number of RPC worker processes for service. (integer value)
 #rpc_workers = 1
+{%- if server.rpc_workers is defined %}
+rpc_workers = {{ server.rpc_workers }}
+{%- else %}
 rpc_workers = {{ grains.num_cpus }}
+{%- endif %}
+
 
 # Number of RPC worker processes dedicated to state reports queue. (integer
 # value)
 #rpc_state_report_workers = 1
+{%- if server.rpc_state_report_workers is defined %}
+rpc_state_report_workers = {{ server.rpc_state_report_workers }}
+{%- else %}
 rpc_state_report_workers = 4
+{%- endif %}
 
 # Range of seconds to randomly delay when starting the periodic task scheduler
 # to reduce stampeding. (Disable by setting to 0) (integer value)
