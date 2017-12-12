@@ -1,4 +1,4 @@
-{%- from "neutron/map.jinja" import fwaas, server, system_cacerts_file with context %}
+{%- from "neutron/map.jinja" import fwaas, server with context %}
 
 [DEFAULT]
 
@@ -750,7 +750,7 @@ allow_headers = {{ server.cors.allow_headers }}
 # Deprecated group/name - [DATABASE]/sql_connection
 # Deprecated group/name - [sql]/connection
 {% if server.backend.engine == "ml2" %}
-connection = {{ server.database.engine }}+pymysql://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}{%- if server.database.get('ssl',{}).get('enabled',False) %}?ssl_ca={{ server.database.ssl.get('cacert_file', system_cacerts_file) }}{% endif %}
+connection = {{ server.database.engine }}+pymysql://{{ server.database.user }}:{{ server.database.password }}@{{ server.database.host }}/{{ server.database.name }}{%- if server.database.get('ssl',{}).get('enabled',False) %}?ssl_ca={{ server.database.ssl.get('cacert_file', server.cacert_file) }}{% endif %}
 {% else %}
 connection = sqlite:////var/lib/neutron/neutron.sqlite
 {% endif %}
@@ -1386,11 +1386,7 @@ kombu_ssl_version = {{ server.message_queue.ssl.version }}
 kombu_ssl_version = TLSv1_2
 {%- endif %}
 
-{%- if server.message_queue.ssl.cacert_file is defined %}
-kombu_ssl_ca_certs = {{ server.message_queue.ssl.cacert_file }}
-{%- else %}
-kombu_ssl_ca_certs={{ system_cacerts_file }}
-{%- endif %}
+kombu_ssl_ca_certs = {{ server.message_queue.ssl.get('cacert_file', server.cacert_file) }}
 {%- endif %}
 
 rabbit_userid = {{ server.message_queue.user }}

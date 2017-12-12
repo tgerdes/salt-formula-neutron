@@ -1,9 +1,12 @@
-{%- set system_cacerts_file = salt['grains.filter_by']({
-    'Debian': '/etc/ssl/certs/ca-certificates.crt',
-    'RedHat': '/etc/pki/tls/certs/ca-bundle.crt'
-})%}
+{%- set default_params = {
+    'cacert_file': salt['grains.filter_by']({
+        'Debian': '/etc/ssl/certs/ca-certificates.crt',
+        'RedHat': '/etc/pki/tls/certs/ca-bundle.crt'
+    })}
+%}
 
 {% set compute = salt['grains.filter_by']({
+    'BaseDefaults': default_params,
     'Debian': {
         'pkgs': ['neutron-openvswitch-agent', 'openvswitch-switch', 'python-pycadf'],
         'pkgs_ovn': ['ovn-common', 'ovn-host'],
@@ -24,9 +27,10 @@
           'enabled': false
         }
     },
-}, merge=pillar.neutron.get('compute', {})) %}
+}, merge=pillar.neutron.get('compute', {}), base='BaseDefaults') %}
 
 {% set gateway = salt['grains.filter_by']({
+    'BaseDefaults': default_params,
     'Debian': {
         'pkgs': ['neutron-dhcp-agent', 'neutron-openvswitch-agent', 'neutron-l3-agent', 'openvswitch-common', 'neutron-metadata-agent'],
         'services': ['neutron-openvswitch-agent', 'neutron-metadata-agent', 'neutron-l3-agent', 'neutron-dhcp-agent'],
@@ -37,9 +41,10 @@
         'services': ['neutron-openvswitch-agent', 'neutron-metadata-agent', 'neutron-l3-agent', 'neutron-dhcp-agent'],
         'dpdk': false
     },
-}, merge=pillar.neutron.get('gateway', {})) %}
+}, merge=pillar.neutron.get('gateway', {}), base='BaseDefaults') %}
 
 {% set server = salt['grains.filter_by']({
+    'BaseDefaults': default_params,
     'Debian': {
         'pkgs': ['neutron-server','python-neutron-lbaas', 'gettext-base', 'python-pycadf'],
         'pkgs_ovn': ['python-networking-ovn', 'ovn-common', 'ovn-central'],
@@ -66,7 +71,7 @@
           'enabled': false
         }
     },
-}, merge=pillar.neutron.get('server', {})) %}
+}, merge=pillar.neutron.get('server', {}), base='BaseDefaults') %}
 
 {% set client = salt['grains.filter_by']({
     'Debian': {

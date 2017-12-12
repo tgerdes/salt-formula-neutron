@@ -1,4 +1,4 @@
-{% from "neutron/map.jinja" import gateway, fwaas, system_cacerts_file with context %}
+{% from "neutron/map.jinja" import gateway, fwaas with context %}
 
 {%- if fwaas.get('enabled', False) %}
 include:
@@ -77,7 +77,7 @@ rabbitmq_ca_neutron_gateway:
     - makedirs: true
 {%- else %}
   file.exists:
-   - name: {{ gateway.message_queue.ssl.get('cacert_file', system_cacerts_file) }}
+   - name: {{ gateway.message_queue.ssl.get('cacert_file', gateway.cacert_file) }}
 {%- endif %}
 {%- endif %}
 

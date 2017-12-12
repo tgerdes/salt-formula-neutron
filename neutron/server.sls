@@ -1,4 +1,4 @@
-{%- from "neutron/map.jinja" import server, fwaas, system_cacerts_file with context %}
+{%- from "neutron/map.jinja" import server, fwaas with context %}
 
 {%- if fwaas.get('enabled', False) %}
 include:
@@ -289,7 +289,7 @@ rabbitmq_ca_neutron_server:
     - makedirs: true
 {%- else %}
   file.exists:
-   - name: {{ server.message_queue.ssl.get('cacert_file', system_cacerts_file) }}
+   - name: {{ server.message_queue.ssl.get('cacert_file', server.cacert_file) }}
 {%- endif %}
 {%- endif %}
 
@@ -303,7 +303,7 @@ mysql_ca_neutron_server:
     - makedirs: true
 {%- else %}
   file.exists:
-   - name: {{ server.database.ssl.get('cacert_file', system_cacerts_file) }}
+   - name: {{ server.database.ssl.get('cacert_file', server.cacert_file) }}
 {%- endif %}
 {%- endif %}
 

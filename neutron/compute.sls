@@ -1,4 +1,4 @@
-{% from "neutron/map.jinja" import compute, fwaas, system_cacerts_file with context %}
+{% from "neutron/map.jinja" import compute, fwaas with context %}
 {%- if compute.enabled %}
 
 {% if compute.backend.engine == "ml2" %}
@@ -129,7 +129,7 @@ rabbitmq_ca_neutron_compute:
     - makedirs: true
 {%- else %}
   file.exists:
-   - name: {{ compute.message_queue.ssl.get('cacert_file', system_cacerts_file) }}
+   - name: {{ compute.message_queue.ssl.get('cacert_file', compute.cacert_file) }}
 {%- endif %}
 {%- endif %}
 
