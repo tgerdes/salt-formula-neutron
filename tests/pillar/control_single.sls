@@ -1,5 +1,8 @@
 neutron:
   server:
+    api_workers: 2
+    rpc_workers: 2
+    rpc_state_report_workers: 2
     enabled: true
     backend:
       external_mtu: 1500

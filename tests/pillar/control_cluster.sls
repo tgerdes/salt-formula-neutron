@@ -6,6 +6,8 @@ neutron:
     dns_domain: novalocal
     tunnel_type: vxlan
     version: liberty
+    api_workers: 2
+    rpc_workers: 2
     backend:
       engine: contrail
       #contrail_discovery_host

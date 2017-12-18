@@ -23,6 +23,9 @@ Neutron Server on the controller node
         version: mitaka
         allow_pagination: true
         pagination_max_limit: 100
+        api_workers: 2
+        rpc_workers: 2
+        rpc_state_report_workers: 2
         bind:
           address: 172.20.0.1
           port: 9696
@@ -52,6 +55,7 @@ Neutron Server on the controller node
           host: 127.0.0.1
           port: 8775
           password: pass
+          workers: 2
         audit:
           enabled: false
 

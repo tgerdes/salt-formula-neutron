@@ -2,6 +2,9 @@ neutron:
   server:
     enabled: true
     version: ocata
+    api_workers: 2
+    rpc_workers: 2
+    rpc_state_report_workers: 2
     backend:
       engine: ovn
       external_mtu: 1500
