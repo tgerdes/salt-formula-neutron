@@ -1,0 +1,10 @@
+{%- from "neutron/map.jinja" import server with context %}
+# This is a POSIX shell fragment                -*- sh -*-
+
+# OVN_CTL_OPTS: Extra options to pass to ovn-ctl.  This is, for example,
+# a suitable place to specify --ovn-northd-wrapper=valgrind.
+{%- set ovn_ctl_opts = [] %}
+{%- for opt, value in server.get('ovn_ctl_opts', {}).iteritems() %}
+{%- do ovn_ctl_opts.append("--%s=%s"|format(opt, value)) %}
+{%- endfor %}
+OVN_CTL_OPTS='{{ ovn_ctl_opts|join(' ') }}'

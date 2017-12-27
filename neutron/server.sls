@@ -192,6 +192,16 @@ ovn_services:
   - require:
     - pkg: ovn_packages
 
+{%- if grains.os_family == 'Debian' %}
+/etc/default/ovn-central:
+  file.managed:
+  - source: salt://neutron/files/{{ server.version }}/ovn_central_options
+  - template: jinja
+  - require:
+    - pkg: ovn_packages
+  - watch_in:
+    - service: ovn_services
+{%- endif %}
 {%- endif %}
 {%- endif %}
 

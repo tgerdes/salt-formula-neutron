@@ -49,6 +49,9 @@ neutron:
       port: 5672
       user: openstack
       virtual_host: /openstack
+    ovn_ctl_opts:
+      db-nb-create-insecure-remote: 'yes'
+      db-sb-create-insecure-remote: 'yes'
 
 linux:
   system:
