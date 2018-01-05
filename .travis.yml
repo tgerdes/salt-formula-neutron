@@ -17,51 +17,52 @@ install:
   - bundle install
 
 env:
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_dpdk
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_dpdk
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_dvr
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_dvr
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_dvr_fwaas_v1
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_legacy
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_legacy
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_nonexternal_dvr
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_nonexternal_dvr
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_sriov
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_sriov
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_qos_sriov
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_qos_sriov
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute_qos
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_qos
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute_ovn
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=control_cluster
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_cluster
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=control_dvr
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_dvr
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=control_nodvr
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_nodvr
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=control_single
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_single
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_lbaas_octavia
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_fwaas_v1
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=control_qos
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_qos
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_ovn
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=control_dns
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=control_dns
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway_dvr
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway_dvr
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway_legacy
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway_legacy
-    - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway_qos
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway_qos
-    - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway_legacy_fwaas_v1
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute-dpdk
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute-dpdk
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute-dvr
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute-dvr
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute-dvr-fwaas-v1
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute-legacy
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute-legacy
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute-nonexternal-dvr
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute-nonexternal-dvr
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute-sriov
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute-sriov
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute-qos-sriov
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute-qos-sriov
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=compute-qos
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute-qos
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=compute-ovn
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=control-cluster
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control-cluster
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=control-dvr
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control-dvr
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=control-nodvr
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control-nodvr
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=control-single
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control-single
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control-lbaas-octavia
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control-fwaas-v1
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=control-qos
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control-qos
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control-ovn
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=control-dns
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=control-dns
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway-dvr
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway-dvr
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway-legacy
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway-legacy
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway-qos
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway-qos
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway-legacy-fwaas-v1
 
 before_script:
   - set -o pipefail
   - make test | tail
 
 script:
-  - KITCHEN_LOCAL_YAML=.kitchen.travis.yml bundle exec kitchen test -t tests/integration
+  - test ! -e .kitchen.yml || bundle exec kitchen converge ${SUITE} || true
+  - test ! -e .kitchen.yml || bundle exec kitchen verify ${SUITE} -t tests/integration
 
 notifications:
   webhooks:
