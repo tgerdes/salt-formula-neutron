@@ -100,16 +100,21 @@ neutron_dvr_agents:
 
 {% endif %}
 
+{%- if 'openvswitch' in compute.backend.mechanism.values()|map(attribute="driver") %}
+neutron_compute_packages_ovs:
+  pkg.installed:
+  - names: {{ compute.pkgs_ovs }}
+
 /etc/neutron/plugins/ml2/openvswitch_agent.ini:
   file.managed:
   - source: salt://neutron/files/{{ compute.version }}/openvswitch_agent.ini
   - template: jinja
   - require:
-    - pkg: neutron_compute_packages
+    - pkg: neutron_compute_packages_ovs
 
 neutron_compute_services:
   service.running:
-  - names: {{ compute.services }}
+  - names: {{ compute.services_ovs }}
   - enable: true
   - watch:
     - file: /etc/neutron/neutron.conf
@@ -117,6 +122,35 @@ neutron_compute_services:
     {%- if compute.message_queue.get('ssl',{}).get('enabled', False) %}
     - file: rabbitmq_ca_neutron_compute
     {%- endif %}
+{% endif %}
+
+{%- if 'linuxbridge' in compute.backend.mechanism.values()|map(attribute="driver") %}
+neutron_compute_packages_linuxbridge:
+  pkg.installed:
+  - names: {{ compute.pkgs_linuxbridge }}
+
+/etc/neutron/plugins/ml2/linuxbridge_agent.ini:
+  file.managed:
+  - source: salt://neutron/files/{{ compute.version }}/linuxbridge_agent.ini
+  - template: jinja
+  - require:
+    - pkg: neutron_compute_packages_linuxbridge
+
+/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini:
+  file.managed:
+  - makedirs: True
+  - contents:
+    - "# Workaround bug in neutron-linuxbridge-agent packaing that requires this file to exist"
+
+neutron_compute_services:
+  service.running:
+  - names: {{ compute.services_linuxbridge }}
+  - enable: true
+  - watch:
+    - file: /etc/neutron/neutron.conf
+    - file: /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+    - file: /etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini
+{% endif %}
 
 
 {%- if compute.message_queue.get('ssl',{}).get('enabled', False) %}

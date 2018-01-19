@@ -32,6 +32,7 @@ neutron_gateway_packages:
 /etc/neutron/dhcp_agent.ini:
   file.managed:
   - source: salt://neutron/files/{{ gateway.version }}/dhcp_agent.ini
+  - template: jinja
   - require:
     - pkg: neutron_gateway_packages
 
@@ -42,6 +43,11 @@ neutron_gateway_packages:
   - require:
     - pkg: neutron_gateway_packages
 
+{%- if 'openvswitch' in gateway.backend.mechanism.values()|map(attribute="driver") %}
+neutron_gateway_packages_ovs:
+  pkg.installed:
+  - names: {{ gateway.pkgs_ovs }}
+
 /etc/neutron/plugins/ml2/openvswitch_agent.ini:
   file.managed:
   - source: salt://neutron/files/{{ gateway.version }}/openvswitch_agent.ini
@@ -49,9 +55,9 @@ neutron_gateway_packages:
   - require:
     - pkg: neutron_gateway_packages
 
-neutron_gateway_services:
+neutron_gateway_services_ovs:
   service.running:
-  - names: {{ gateway.services }}
+  - names: {{ gateway.services_ovs }}
   - enable: true
   - watch:
     - file: /etc/neutron/neutron.conf
@@ -65,6 +71,35 @@ neutron_gateway_services:
     {%- if gateway.message_queue.get('ssl',{}).get('enabled', False) %}
     - file: rabbitmq_ca_neutron_gateway
     {%- endif %}
+
+{%- endif %}
+{%- if 'linuxbridge' in gateway.backend.mechanism.values()|map(attribute="driver") %}
+neutron_gateway_packages_linuxbridge:
+  pkg.installed:
+  - names: {{ gateway.pkgs_linuxbridge }}
+
+/etc/neutron/plugins/ml2/linuxbridge_agent.ini:
+  file.managed:
+  - source: salt://neutron/files/{{ gateway.version }}/linuxbridge_agent.ini
+  - template: jinja
+  - require:
+    - pkg: neutron_gateway_linuxbridge_packages
+
+/etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini:
+  file.managed:
+  - makedirs: True
+  - contents:
+    - "# Workaround bug in neutron-linuxbridge-agent packaing that requires this file to exist"
+
+neutron_gateway_services_linuxbridge:
+  service.running:
+  - names: {{ gateway.services_linuxbridge }}
+  - enable: true
+  - watch:
+    - file: /etc/neutron/neutron.conf
+    - file: /etc/neutron/plugins/ml2/linuxbridge_agent.ini
+    - file: /etc/neutron/plugins/linuxbridge/linuxbridge_conf.ini
+{%- endif %}
 
 
 {%- if gateway.message_queue.get('ssl',{}).get('enabled', False) %}
