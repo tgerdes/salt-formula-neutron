@@ -17,6 +17,44 @@ install:
   - bundle install
 
 env:
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=compute-dpdk
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=compute-dpdk
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=compute-dvr
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=compute-dvr
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=compute-dvr-fwaas-v1
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=compute-legacy
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=compute-legacy
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=compute-nonexternal-dvr
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=compute-nonexternal-dvr
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=compute-sriov
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=compute-sriov
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=compute-qos-sriov
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=compute-qos-sriov
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=compute-qos
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=compute-qos
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=compute-ovn
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=control-cluster
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=control-cluster
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=control-dvr
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=control-dvr
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=control-nodvr
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=control-nodvr
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=control-single
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=control-single
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=control-lbaas-octavia
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=control-fwaas-v1
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=control-qos
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=control-qos
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=control-ovn
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=control-dns
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=control-dns
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=gateway-dvr
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=gateway-dvr
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=gateway-legacy
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=gateway-legacy
+    - PLATFORM=trevorj/salty-whales:trusty-2017.7 SUITE=gateway-qos
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=gateway-qos
+    - PLATFORM=trevorj/salty-whales:xenial-2017.7 SUITE=gateway-legacy-fwaas-v1
     - PLATFORM=trevorj/salty-whales:trusty SUITE=compute-dpdk
     - PLATFORM=trevorj/salty-whales:xenial SUITE=compute-dpdk
     - PLATFORM=trevorj/salty-whales:trusty SUITE=compute-dvr
@@ -55,7 +93,6 @@ env:
     - PLATFORM=trevorj/salty-whales:trusty SUITE=gateway-qos
     - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway-qos
     - PLATFORM=trevorj/salty-whales:xenial SUITE=gateway-legacy-fwaas-v1
-
 before_script:
   - set -o pipefail
   - make test | tail
