@@ -118,6 +118,83 @@ neutron_compute_services:
     - file: rabbitmq_ca_neutron_compute
     {%- endif %}
 
+{%- set neutron_compute_services_list = compute.services %}
+{%- if compute.backend.sriov is defined %}
+  {%- do neutron_compute_services_list.append('neutron-sriov-agent') %}
+{%- endif %}
+{%- if compute.dvr %}
+  {%- do neutron_compute_services_list.extend(['neutron-l3-agent', 'neutron-metadata-agent']) %}
+{%- endif %}
+
+{%- for service_name in neutron_compute_services_list %}
+{{ service_name }}_default:
+  file.managed:
+    - name: /etc/default/{{ service_name }}
+    - source: salt://neutron/files/default
+    - template: jinja
+    - defaults:
+        service_name: {{ service_name }}
+        values: {{ compute }}
+    - require:
+      - pkg: neutron_compute_packages
+{% if compute.backend.sriov is defined %}
+      - pkg: neutron_sriov_package
+{% endif %}
+{% if compute.dvr %}
+      - pkg: neutron_dvr_packages
+{% endif %}
+    - watch_in:
+      - service: neutron_compute_services
+{% if compute.backend.sriov is defined %}
+      - service: neutron_sriov_service
+{% endif %}
+{% if compute.dvr %}
+      - service: neutron_dvr_agents
+{% endif %}
+{% endfor %}
+
+{%- if compute.logging.log_appender %}
+
+{%- if compute.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+neutron_compute_fluentd_logger_package:
+  pkg.installed:
+    - name: python-fluent-logger
+{%- endif %}
+
+{% for service_name in neutron_compute_services_list %}
+{{ service_name }}_logging_conf:
+  file.managed:
+    - name: /etc/neutron/logging/logging-{{ service_name }}.conf
+    - source: salt://neutron/files/logging.conf
+    - template: jinja
+    - makedirs: True
+    - user: neutron
+    - group: neutron
+    - defaults:
+        service_name: {{ service_name }}
+        values: {{ compute }}
+    - require:
+      - pkg: neutron_compute_packages
+{% if compute.backend.sriov is defined %}
+      - pkg: neutron_sriov_package
+{% endif %}
+{% if compute.dvr %}
+      - pkg: neutron_dvr_packages
+{% endif %}
+{%- if compute.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+      - pkg: neutron_compute_fluentd_logger_package
+{%- endif %}
+    - watch_in:
+      - service: neutron_compute_services
+{% if compute.backend.sriov is defined %}
+      - service: neutron_sriov_service
+{% endif %}
+{% if compute.dvr %}
+      - service: neutron_dvr_agents
+{% endif %}
+{% endfor %}
+
+{% endif %}
 
 {%- if compute.message_queue.get('ssl',{}).get('enabled', False) %}
 rabbitmq_ca_neutron_compute:

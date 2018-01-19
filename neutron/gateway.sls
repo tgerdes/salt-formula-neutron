@@ -49,6 +49,52 @@ neutron_gateway_packages:
   - require:
     - pkg: neutron_gateway_packages
 
+{%- for service_name in gateway.services %}
+{{ service_name }}_default:
+  file.managed:
+    - name: /etc/default/{{ service_name }}
+    - source: salt://neutron/files/default
+    - template: jinja
+    - defaults:
+        service_name: {{ service_name }}
+        values: {{ gateway }}
+    - require:
+      - pkg: neutron_gateway_packages
+    - watch_in:
+      - service: neutron_gateway_services
+{% endfor %}
+
+{%- if gateway.logging.log_appender %}
+
+{%- if gateway.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+neutron_gateway_fluentd_logger_package:
+  pkg.installed:
+    - name: python-fluent-logger
+{%- endif %}
+
+{% for service_name in gateway.services %}
+{{ service_name }}_logging_conf:
+  file.managed:
+    - name: /etc/neutron/logging/logging-{{ service_name }}.conf
+    - source: salt://neutron/files/logging.conf
+    - template: jinja
+    - makedirs: true
+    - user: neutron
+    - group: neutron
+    - defaults:
+        service_name: {{ service_name }}
+        values: {{ gateway }}
+    - require:
+      - pkg: neutron_gateway_packages
+{%- if gateway.logging.log_handlers.get('fluentd', {}).get('enabled', False) %}
+      - pkg: neutron_gateway_fluentd_logger_package
+{%- endif %}
+    - watch_in:
+      - service: neutron_gateway_services
+{% endfor %}
+
+{% endif %}
+
 neutron_gateway_services:
   service.running:
   - names: {{ gateway.services }}

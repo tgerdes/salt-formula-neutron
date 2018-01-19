@@ -5,6 +5,8 @@ classes:
 parameters:
   _param:
     keystone_neutron_endpoint_type: internal
+    openstack_log_appender: false
+    openstack_fluentd_handler_enabled: false
   neutron:
     server:
       enabled: true
@@ -35,6 +37,13 @@ parameters:
         password: ${_param:keystone_neutron_password}
         tenant: service
         endpoint_type: ${_param:keystone_neutron_endpoint_type}
+      logging:
+        log_appender: ${_param:openstack_log_appender}
+        log_handlers:
+          watchedfile:
+            enabled: true
+          fluentd:
+            enabled: ${_param:openstack_fluentd_handler_enabled}
       message_queue:
         engine: rabbitmq
         host: ${_param:single_address}

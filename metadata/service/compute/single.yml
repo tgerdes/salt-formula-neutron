@@ -3,6 +3,9 @@ applications:
 classes:
 - service.neutron.support
 parameters:
+  _param:
+    openstack_log_appender: false
+    openstack_fluentd_handler_enabled: false
   neutron:
     compute:
       enabled: true
@@ -29,3 +32,10 @@ parameters:
         mechanism:
           ovs:
             driver: openvswitch
+      logging:
+        log_appender: ${_param:openstack_log_appender}
+        log_handlers:
+          watchedfile:
+            enabled: true
+          fluentd:
+            enabled: ${_param:openstack_fluentd_handler_enabled}
