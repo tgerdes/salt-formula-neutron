@@ -119,8 +119,15 @@ dashboard:
     datasource: influxdb
     format: json
     template: neutron/files/grafana_dashboards/neutron_influxdb.json
+{%- if pillar.get('fluentd', {}).get('agent', {}).get('enabled', False) %}
+  neutron_prometheus:
+    datasource: prometheus
+    format: json
+    template: neutron/files/grafana_dashboards/neutron_prometheus_fluentd.json
+{%- else %}
   neutron_prometheus:
     datasource: prometheus
     format: json
     template: neutron/files/grafana_dashboards/neutron_prometheus.json
+{%- endif %}
 {%- endif %}
