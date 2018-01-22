@@ -292,6 +292,35 @@ compute nodes:
         external_access: false
 
 
+Add additional bridge mappings for OVS bridges
+----------------------------------------------
+
+By default we have external access turned on, so among any physnets in
+your reclass there would be additional one: physnet1, which is mapped to
+br-floating
+
+If you need to add extra non-default bridge mappings they can be defined
+separately for both gateways and compute nodes:
+
+gateways:
+
+.. code-block:: yaml
+
+    neutron:
+      gateway:
+        bridge_mappings:
+          physnet4: br-floating-internet
+
+compute nodes:
+
+.. code-block:: yaml
+
+    neutron:
+      compute:
+        bridge_mappings:
+          physnet4: br-floating-internet
+
+
 Specify different mtu values for different physnets
 ---------------------------------------------------
 
